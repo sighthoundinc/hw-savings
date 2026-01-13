@@ -81,16 +81,28 @@
           <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50 mb-3">
             Hardware Savings Calculator
           </h1>
-          <section class="mb-6 space-y-1 text-sm text-slate-600 dark:text-slate-300">
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 mb-4">
+            Estimate hardware savings in under a minute by comparing smart AI cameras with Sighthound Compute Hardware plus standard IP cameras.
+          </p>
+          <section class="mb-6 space-y-2 text-sm text-slate-600 dark:text-slate-300">
             <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-50">
               How this works
             </h2>
-            <p>
-              This calculator estimates how much you can save by deploying Sighthound Compute Hardware in your system that brings AI to the edge, instead of buying smart AI cameras for every location.
-            </p>
-            <p>
-              Compare the cost of smart AI cameras vs a Sighthound Compute Node with standard IP cameras.
-            </p>
+            <div class="mt-1 inline-flex flex-wrap items-center gap-2 text-[11px] sm:text-xs font-medium text-slate-700 dark:text-slate-200">
+              <div class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 dark:bg-slate-800">
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-900 dark:bg-slate-100"></span>
+                <span class="uppercase tracking-wide">Step 1</span>
+                <span class="text-slate-500 dark:text-slate-400">Enter cameras &amp; hardware costs</span>
+              </div>
+              <div class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 dark:bg-slate-800">
+                <span class="h-1.5 w-1.5 rounded-full bg-sky-600"></span>
+                <span class="uppercase tracking-wide">Step 2</span>
+                <span class="text-slate-500 dark:text-slate-400">Review savings &amp; deployment details</span>
+              </div>
+              <span class="ml-1 text-[11px] font-normal text-sky-700 dark:text-sky-400">
+                Updates instantly as you type.
+              </span>
+            </div>
           </section>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
             <!-- Inputs column -->
@@ -99,7 +111,7 @@
                 Your setup
               </h2>
               <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                Enter your camera count and typical hardware costs. Results update instantly.
+                Enter your camera count and typical hardware costs for your deployment.
               </p>
 
               <div class="space-y-4">
@@ -110,6 +122,11 @@
                     class="block text-sm font-medium text-slate-700 dark:text-slate-200"
                   >
                     Total cameras
+                    <span
+                      class="ml-2 inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-rose-600 dark:bg-rose-950/40 dark:text-rose-300"
+                    >
+                      Required
+                    </span>
                   </label>
                   <input
                     id="totalCameras"
@@ -152,7 +169,7 @@
                     />
                   </div>
                   <p class="text-xs text-slate-500 dark:text-slate-400">
-                    Typical price per smart AI camera.
+                    Per smart AI camera (hardware only).
                   </p>
                 </div>
 
@@ -182,15 +199,20 @@
                     />
                   </div>
                   <p class="text-xs text-slate-500 dark:text-slate-400">
-                    Typical price per standard IP camera.
+                    Per IP camera with Sighthound (hardware only).
                   </p>
                 </div>
               </div>
 
               <!-- Optional software cost input -->
               <div class="mt-4 border-t border-slate-200 pt-4 space-y-2 dark:border-slate-700">
-                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                  Optional: your current software cost
+                <h3 class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                  <span>Optional: your current software cost</span>
+                  <span
+                    class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                  >
+                    Optional
+                  </span>
                 </h3>
                 <div class="space-y-1.5">
                   <label
@@ -264,8 +286,13 @@
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- Today -->
                     <div class="border border-slate-200 rounded-lg p-4 flex flex-col gap-1.5 dark:border-slate-700">
-                      <p class="text-xs font-medium text-slate-600 uppercase tracking-wide dark:text-slate-400">
-                        Your cost today
+                      <p class="flex items-center justify-between gap-2 text-xs font-medium text-slate-600 uppercase tracking-wide dark:text-slate-400">
+                        <span>Today  smart AI cameras</span>
+                        <span
+                          class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                        >
+                          Before
+                        </span>
                       </p>
                       <p
                         id="currentTotalValue"
@@ -278,9 +305,9 @@
                     <!-- Sighthound -->
                     <div class="border border-sky-300 rounded-lg p-4 flex flex-col gap-1.5 bg-sky-50/70 shadow-sm dark:border-sky-500/70 dark:bg-sky-950/40">
                       <p class="text-xs font-medium text-slate-700 uppercase tracking-wide flex items-center justify-between gap-2 dark:text-slate-100">
-                        <span>Your cost with Sighthound Compute Hardware</span>
+                        <span>With Sighthound Compute Hardware</span>
                         <span class="inline-flex items-center rounded-full bg-sky-600/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-700 dark:bg-sky-500/20 dark:text-sky-200">
-                          Focus
+                          After
                         </span>
                       </p>
                       <p
@@ -292,7 +319,7 @@
                     </div>
                   </div>
 
-                  <div class="mt-3 space-y-1">
+                  <div class="mt-3 space-y-1 rounded-lg border border-slate-200 bg-slate-50/80 p-3 dark:border-slate-700 dark:bg-slate-900/60">
                     <div class="flex items-start gap-2">
                       <input
                         id="existingCamerasToggle"
@@ -301,12 +328,15 @@
                       />
                       <label
                         for="existingCamerasToggle"
-                        class="text-xs text-slate-600 dark:text-slate-400"
+                        class="text-xs font-medium text-slate-700 dark:text-slate-300"
                       >
                         We already have standard IP cameras installed in this system.
                       </label>
                     </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                    <p
+                      id="existingCamerasHelper"
+                      class="text-xs text-slate-500 dark:text-slate-400"
+                    >
                       Use this if you already have standard IP cameras installed and won't be buying new ones.
                     </p>
                   </div>
@@ -346,6 +376,7 @@
 
                 <!-- Savings card -->
                 <div
+                  id="primaryCard"
                   class="rounded-xl shadow-sm border border-slate-200 bg-gradient-to-br from-sky-50/80 via-slate-50 to-emerald-50/80 p-5 sm:p-6 flex flex-col gap-4 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900"
                 >
                   <div class="flex items-start justify-between gap-4">
@@ -399,6 +430,9 @@
                   </h3>
                   <p class="text-xs text-slate-500 dark:text-slate-400">
                     A quick breakdown of Compute Nodes required, cost reduction, and cost per camera.
+                  </p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-500">
+                    Assumes a typical maximum camera count per Compute Node under standard workloads. Your actual node count may vary based on retention and AI workloads.
                   </p>
                   <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                     <div class="space-y-1">
@@ -467,13 +501,18 @@
                   </dl>
 
                   <!-- Optional software monthly comparison -->
-                  <div class="mt-4 border-t border-slate-200 pt-4 space-y-1 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                  <div
+                    id="softwareComparison"
+                    class="mt-4 hidden border-t border-slate-200 pt-4 space-y-1 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400"
+                  >
                     <p class="font-semibold text-slate-700 dark:text-slate-200">
                       Software costs (monthly, optional estimate)
                     </p>
-                    <p id="softwareCurrentMonthlyLine">Your software per month: –</p>
-                    <p id="softwareSighthoundMonthlyLine">Estimated Sighthound software per month: –</p>
-                    <p id="softwareDeltaMonthlyLine">Monthly software difference: –</p>
+                    <p id="softwareCurrentMonthlyLine">Your software per month: </p>
+                    <p id="softwareSighthoundMonthlyLine">Estimated Sighthound software per month: </p>
+                    <p id="softwareDeltaMonthlyLine" class="font-semibold">
+                      Monthly software difference: 
+                    </p>
                     <p>
                       Software costs are <span class="font-semibold">not included</span> in the hardware totals or savings above.
                     </p>
@@ -602,6 +641,7 @@
       const smartCameraCostInput = document.getElementById("smartCameraCost");
       const dumbCameraCostInput = document.getElementById("dumbCameraCost");
       const existingCamerasToggle = document.getElementById("existingCamerasToggle");
+      const existingCamerasHelper = document.getElementById("existingCamerasHelper");
       const resetCalculatorButton = document.getElementById("resetCalculatorButton");
       const currentSoftwareCostPerCameraInput = document.getElementById(
         "currentSoftwareCostPerCamera"
@@ -621,6 +661,7 @@
       const primaryValue = document.getElementById("primaryValue");
       const primaryArrow = document.getElementById("primaryArrow");
       const primaryArrowIcon = document.getElementById("primaryArrowIcon");
+      const primaryCard = document.getElementById("primaryCard");
 
       const currentTotalValue = document.getElementById("currentTotalValue");
       const sighthoundTotalValue = document.getElementById(
@@ -654,6 +695,7 @@
       const costPerCameraAfterValue = document.getElementById(
         "costPerCameraAfterValue"
       );
+      const softwareComparison = document.getElementById("softwareComparison");
       const softwareCurrentMonthlyLine = document.getElementById(
         "softwareCurrentMonthlyLine"
       );
@@ -828,6 +870,12 @@
           ? existingCamerasToggle.checked
           : false;
 
+        if (existingCamerasHelper) {
+          existingCamerasHelper.textContent = hasExistingCameras
+            ? "Sighthound cost now excludes new camera hardware  using your existing IP cameras."
+            : "Use this if you already have standard IP cameras installed and won't be buying new ones.";
+        }
+
         const currentSoftwarePerCameraRaw = currentSoftwareCostPerCameraInput
           ? currentSoftwareCostPerCameraInput.value
           : "";
@@ -909,6 +957,30 @@
           : "Extra cost vs today";
         primaryValue.textContent = Calculator.formatCurrency(Math.abs(savings));
 
+        if (primaryCard) {
+          primaryCard.className =
+            "rounded-xl shadow-sm border p-5 sm:p-6 flex flex-col gap-4 " +
+            (isSavingsPositiveOrZero
+              ? "border-slate-200 bg-gradient-to-br from-sky-50/80 via-slate-50 to-emerald-50/80 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900"
+              : "border-rose-100 bg-rose-50/80 dark:border-rose-900 dark:bg-rose-950");
+        }
+
+        if (primaryLabel) {
+          primaryLabel.className =
+            "text-sm font-medium flex items-center gap-1.5 " +
+            (isSavingsPositiveOrZero
+              ? "text-slate-700 dark:text-slate-200"
+              : "text-rose-700 dark:text-rose-300");
+        }
+
+        if (primaryValue) {
+          primaryValue.className =
+            "mt-1 text-3xl sm:text-4xl font-semibold tracking-tight tabular-nums " +
+            (isSavingsPositiveOrZero
+              ? "text-emerald-600 dark:text-emerald-400"
+              : "text-rose-600 dark:text-rose-400");
+        }
+
         // Primary arrow styling (down = good / up = bad)
         primaryArrow.className =
           "inline-flex h-8 w-8 items-center justify-center rounded-full " +
@@ -977,6 +1049,7 @@
 
         // Update optional software comparison lines
         if (
+          softwareComparison &&
           softwareCurrentMonthlyLine &&
           softwareSighthoundMonthlyLine &&
           softwareDeltaMonthlyLine
@@ -986,26 +1059,27 @@
             softwareSighthoundMonthly !== null &&
             softwareDeltaMonthly !== null
           ) {
+            softwareComparison.classList.remove("hidden");
             softwareCurrentMonthlyLine.textContent =
               "Your software per month: " +
               Calculator.formatCurrency(softwareCurrentMonthly);
             softwareSighthoundMonthlyLine.textContent =
               "Estimated Sighthound software per month: " +
               Calculator.formatCurrency(softwareSighthoundMonthly);
-            const deltaLabelPrefix =
-              softwareDeltaMonthly >= 0
-                ? "Monthly software difference (extra cost): "
-                : "Monthly software difference (savings): ";
+            const isSoftwareSavings = softwareDeltaMonthly < 0;
+            const deltaLabelPrefix = isSoftwareSavings
+              ? "Monthly software difference (savings): "
+              : "Monthly software difference (extra cost): ";
             softwareDeltaMonthlyLine.textContent =
               deltaLabelPrefix +
               Calculator.formatCurrency(Math.abs(softwareDeltaMonthly));
+            softwareDeltaMonthlyLine.className =
+              "font-semibold " +
+              (isSoftwareSavings
+                ? "text-emerald-600 dark:text-emerald-400"
+                : "text-rose-600 dark:text-rose-400");
           } else {
-            softwareCurrentMonthlyLine.textContent =
-              "Your software per month: –";
-            softwareSighthoundMonthlyLine.textContent =
-              "Estimated Sighthound software per month: –";
-            softwareDeltaMonthlyLine.textContent =
-              "Monthly software difference: –";
+            softwareComparison.classList.add("hidden");
           }
         }
 

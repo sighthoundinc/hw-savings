@@ -69,7 +69,7 @@ These assumptions are intentional and should not be changed casually. They are e
 - **Capacity:** Each Sighthound Compute Node supports **up to 4 cameras**
 - **Node price:** Each Compute Node is fixed at **$3,500**
 - **Scope:** The calculator is **hardware-only**
-  - No SaaS, licensing, or cloud subscription fees
+  - No SaaS, licensing, or cloud subscription fees in the core totals
   - No bandwidth, storage, or retention assumptions
   - No labor, installation, or ongoing operations
 - **Audience:** This is a pre-sales estimation tool, not a full TCO/ROI model
@@ -134,6 +134,25 @@ The calculator computes:
    costPerCameraAfter  = sighthoundTotal / totalCameras
    ```
 
+7. **Optional software comparison (monthly)**
+
+   If the user provides a current software cost per camera per month, we also compute an optional monthly software comparison. This is **not** included in any of the hardware totals or savings numbers; it is surfaced as a separate, clearly labeled section in the UI.
+
+   ```
+   if currentSoftwarePerCamera is provided:
+     softwareCurrentMonthly   = totalCameras × currentSoftwarePerCamera
+     softwareSighthoundMonthly = totalCameras × SIGHTHOUND_SOFTWARE_COST_PER_CAMERA
+     softwareDeltaMonthly      = softwareCurrentMonthly − softwareSighthoundMonthly
+   else:
+     softwareCurrentMonthly   = null
+     softwareSighthoundMonthly = null
+     softwareDeltaMonthly      = null
+   ```
+
+   - When the inputs are valid, the UI reveals a small "Software costs (monthly, optional estimate)" section.
+   - The "Monthly software difference" line is colored and labeled as either **savings** (green, negative delta) or **extra cost** (red, positive delta).
+   - When no software cost per camera is entered, the entire software comparison section remains hidden, to keep the default view focused on hardware only.
+
 ### Existing camera toggle
 
 In the UI there is a toggle for **“We already have standard IP cameras installed in this system.”** When this is checked:
@@ -141,6 +160,7 @@ In the UI there is a toggle for **“We already have standard IP cameras install
 - We still compute `nodesNeeded` the same way.
 - The camera hardware component in the Sighthound total becomes zero:
   - Sighthound only charges for Compute Nodes in that scenario.
+- The helper text under the toggle changes to make it explicit that existing IP cameras are being reused and that no new camera hardware cost is added on the Sighthound side.
 
 Conceptually:
 
@@ -159,6 +179,7 @@ The calculator always shows the result, even when `savings` is negative (i.e., S
 
 - This is **intentional**: the tool is for honest comparison, not only “good” examples.
 - In the UI, negative savings are labeled as **“Extra cost vs today”** and styled in red; positive savings are labeled as **“Savings vs today”** and styled in green.
+- The primary savings card background also changes (neutral/positive gradient vs subtle warning tint) so the overall state of the scenario is visually clear.
 - This avoids misleading users into thinking Sighthound is *always* cheaper on hardware alone.
 
 ---
@@ -191,13 +212,23 @@ Within the results column, cards appear in this order:
 
 Reasons:
 
-- Users first see **absolute costs** (
-  "what am I spending now vs with Sighthound?")
-- Then they see **delta** (
-  savings or extra cost), framed clearly as a difference
+- Users first see **absolute costs** ("what am I spending now vs with Sighthound?")
+- Then they see **delta** (savings or extra cost), framed clearly as a difference
 - Finally, they can inspect **details** and take action (CTA)
 
 This ordering is important – do not move the savings card above the absolute costs, or it becomes easy to misread the savings number as the total cost.
+
+### Input and state cues
+
+The UI deliberately includes several affordances to make the state of the calculator obvious:
+
+- A short subheader under the main title explains, in one sentence, what the calculator does and how it is used.
+- A compact "Step 1 / Step 2" strip under **How this works** reinforces the flow:
+  - Step 1: enter camera counts and hardware costs.
+  - Step 2: review savings and deployment details.
+- A small note – "Updates instantly as you type" – encourages experimentation and confirms that the tool is reactive.
+- The **Total cameras** input is explicitly marked with a **Required** pill so visitors know it must be filled in before any useful results appear.
+- The software cost field is labeled as **Optional** and visually tagged as such, to avoid implying it is needed for the core hardware estimate.
 
 ### Progressive disclosure (breakdown)
 
