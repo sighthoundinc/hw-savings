@@ -12,20 +12,21 @@ Legend (from RFC2119): !=MUST, ~=SHOULD, ≉=SHOULD NOT, ⊗=MUST NOT, ?=MAY.
 
 **Warping** is a layered framework for AI-assisted work with consistent standards and workflows.
 
-**For coding tasks**: See [core/coding.md](./core/coding.md) for software development guidelines.
+**For coding tasks**: See [coding/coding.md](./coding/coding.md) for software development guidelines.
 
 ## Framework Structure
 
 **Core Documents:**
 - [main.md](../main.md) - General AI behavior (this document)
-- [core/coding.md](./core/coding.md) - Software development guidelines
+- [coding/coding.md](./coding/coding.md) - Software development guidelines
 - [core/user.md](./core/user.md) - Personal preferences (highest precedence)
 - [core/project.md](./core/project.md) - Project-specific overrides
 
 **Coding-Specific:**
 - Languages: [languages/cpp.md](./languages/cpp.md), [languages/go.md](./languages/go.md), [languages/python.md](./languages/python.md), [languages/typescript.md](./languages/typescript.md)
 - Interfaces: [interfaces/cli.md](./interfaces/cli.md), [interfaces/tui.md](./interfaces/tui.md), [interfaces/web.md](./interfaces/web.md), [interfaces/rest.md](./interfaces/rest.md)
-- Tools: [tools/taskfile.md](./tools/taskfile.md), [tools/git.md](./tools/git.md), [tools/github.md](./tools/github.md), [tools/testing.md](./tools/testing.md), [tools/telemetry.md](./tools/telemetry.md)
+- Tools: [tools/taskfile.md](./tools/taskfile.md), [tools/git.md](./tools/git.md), [tools/github.md](./tools/github.md), [tools/telemetry.md](./tools/telemetry.md)
+- Testing: [coding/testing.md](./coding/testing.md)
 
 **Advanced:**
 - Multi-agent: [swarm/swarm.md](./swarm/swarm.md)

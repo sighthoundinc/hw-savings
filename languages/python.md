@@ -5,7 +5,7 @@ Legend (from RFC2119): !=MUST, ~=SHOULD, ≉=SHOULD NOT, ⊗=MUST NOT, ?=MAY.
 **⚠️ See also** (load only when needed):
 - [../main.md](../main.md) - General AI guidelines
 - [../core/project.md](../core/project.md) - For project-specific overrides
-- [../tools/testing.md](../tools/testing.md) - When writing tests
+- [../coding/testing.md](../coding/testing.md) - When writing tests
 
 **Stack**: Python 3.11+, pytest; Web: Flask/FastAPI; CLI: typer[all]; TUI: textual[dev]
 
@@ -15,7 +15,7 @@ Legend (from RFC2119): !=MUST, ~=SHOULD, ≉=SHOULD NOT, ⊗=MUST NOT, ?=MAY.
 - ! PEP 257 docstrings for all public APIs
 
 ### Testing
-See [../tools/testing.md](../tools/testing.md) for universal requirements.
+See [../coding/testing.md](../coding/testing.md) for universal requirements.
 
 - ! Use pytest + pytest-cov + pytest-mock
 - Files: `test_*.py` or `*_test.py`
@@ -155,6 +155,6 @@ disallow_untyped_defs=true
 ## Compliance Checklist
 
 - ! Follow PEP 257 (docstrings) and PEP 484 (type hints)
-- ! See [../tools/testing.md](../tools/testing.md) for testing requirements
+- ! See [../coding/testing.md](../coding/testing.md) for testing requirements
 - ~ Use Pydantic for data validation
 - ! Run `task check` before commit

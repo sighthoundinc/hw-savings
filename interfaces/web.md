@@ -75,7 +75,7 @@ Tags: R+TW=React+Tailwind; htmx+BS=htmx+Bootstrap; CSS=plain CSS; JS=vanilla JS.
 
 ## Testing
 
-See [testing.md](../tools/testing.md) for universal requirements.
+See [testing.md](../coding/testing.md) for universal requirements.
 
 - ! Test component interactions and state changes
 - ! Test accessibility (keyboard nav, screen readers)

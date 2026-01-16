@@ -11,7 +11,7 @@ Legend (from RFC2119): !=MUST, ~=SHOULD, ≉=SHOULD NOT, ⊗=MUST NOT, ?=MAY.
 - ! All exported symbols have doc comments (complete sentences)
 
 ### Testing
-See [testing.md](../tools/testing.md) for universal requirements.
+See [testing.md](../coding/testing.md) for universal requirements.
 
 - ! Use Testify (assert/require)
 - Files: `*_test.go`, functions: `TestFuncName(t *testing.T)`
@@ -69,5 +69,5 @@ for _, tt := range tests {
 ## Compliance Checklist
 
 - ! Follow go.dev/doc/comment for all exported symbols
-- ! See [testing.md](../tools/testing.md) for testing requirements
+- ! See [testing.md](../coding/testing.md) for testing requirements
 - ! Run `task check` before commit

@@ -268,15 +268,15 @@ cmd_spec() {
     info "Warping Specification Generator"
     echo ""
     
-    local spec_file="./SPECIFICATION.md"
+    local prd_file="./PRD.md"
     
-    if [[ -f "$spec_file" ]] && [[ ! "$*" =~ --force ]]; then
-        warn "SPECIFICATION.md already exists. Use --force to overwrite."
+    if [[ -f "$prd_file" ]] && [[ ! "$*" =~ --force ]]; then
+        warn "PRD.md already exists. Use --force to overwrite."
         return 1
     fi
     
-    info "This command will help you create a comprehensive project specification."
-    info "You'll be interviewed about your project requirements."
+    info "This command will help you create a Product Requirements Document."
+    info "You'll provide basic info, then continue with AI for detailed interview."
     echo ""
     
     read -p "Project name: " spec_name
@@ -291,87 +291,53 @@ cmd_spec() {
         features+=("$feature")
     done
     
-    # Generate specification template
-    cat > "$spec_file" <<EOF
-# ${spec_name} Specification
+    # Build feature list
+    feature_list=""
+    for i in "${!features[@]}"; do
+        feature_list+="$((i+1)). ${features[$i]}\n"
+    done
+    
+    # Read the make-spec template
+    local template_file="${SCRIPT_DIR}/templates/make-spec.md"
+    if [[ ! -f "$template_file" ]]; then
+        error "Template file not found: ${template_file}"
+        return 1
+    fi
+    
+    # Read template and substitute placeholders
+    local template_content
+    template_content=$(cat "$template_file")
+    
+    # Replace placeholders in Input Template section
+    template_content=$(echo "$template_content" | sed "
+        s/\[project name\]/${spec_name}/g
+        s/I want to build \[project name\]/I want to build ${spec_name}/g
+    ")
+    
+    # Generate PRD with filled-in template
+    cat > "$prd_file" <<EOF
+# Product Requirements Document: ${spec_name}
 
 **Generated**: $(date +%Y-%m-%d)
-**Status**: Draft
+**Status**: Ready for AI Interview
 
-## Overview
+## Initial Input
 
-${spec_desc}
+**Project Description**: ${spec_desc}
 
-## Features
-
-$(for i in "${!features[@]}"; do echo "$((i+1)). ${features[$i]}"; done)
-
-## Requirements
-
-### Functional Requirements
-
-(To be filled in during AI interview)
-
-### Non-Functional Requirements
-
-(To be filled in during AI interview)
-
-## Architecture
-
-### Component Design
-
-(To be filled in during AI interview)
-
-### Technology Stack
-
-(To be filled in during AI interview)
-
-### Data Models
-
-(To be filled in during AI interview)
-
-## Implementation Plan
-
-### Phase 1: Foundation
-
-#### Subphase 1.1: Setup
-- Task 1.1.1: (to be defined)
-
-(To be filled in during AI interview)
-
-## Testing Strategy
-
-(To be filled in during AI interview)
-
-## Deployment
-
-(To be filled in during AI interview)
-
-## Risks and Mitigations
-
-(To be filled in during AI interview)
-
+**I want to build ${spec_name} that has the following features:**
+$(echo -e "$feature_list")
 ---
 
-**Next Steps**:
-1. Review this template with AI assistant
-2. Use templates/make-spec.md process for detailed interview
-3. AI will fill in all sections based on interview
-4. Review and approve final specification
-
-**Command to continue**:
-\`\`\`
-# In your AI chat, paste the content of warping/templates/make-spec.md
-# along with this specification to continue the interview process
-\`\`\`
+${template_content}
 EOF
     
-    success "Created SPECIFICATION.md at ${spec_file}"
+    success "Created PRD.md at ${prd_file}"
     info "Next steps:"
-    info "  1. Open your AI assistant (Claude, etc.)"
-    info "  2. Share the content of: warping/templates/make-spec.md"
-    info "  3. Include this SPECIFICATION.md"
-    info "  4. The AI will interview you to complete the specification"
+    info "  1. Open your AI assistant (Claude, Warp AI, etc.)"
+    info "  2. Share PRD.md with your AI"
+    info "  3. The AI will conduct a detailed interview based on the template"
+    info "  4. AI will generate the final SPECIFICATION.md"
 }
 
 # Init command - initialize warping in a project
@@ -472,7 +438,7 @@ cmd_validate() {
     local required_files=(
         "main.md"
         "core/user.md"
-        "core/coding.md"
+        "coding/coding.md"
         "REFERENCES.md"
     )
     

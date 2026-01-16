@@ -12,7 +12,7 @@ Legend (from RFC2119): !=MUST, ~=SHOULD, ≉=SHOULD NOT, ⊗=MUST NOT, ?=MAY.
 - ! TSDoc comments for all exported APIs
 
 ### Testing
-See [testing.md](../tools/testing.md) for universal requirements.
+See [testing.md](../coding/testing.md) for universal requirements.
 
 - ! Use Vitest (or Jest) + coverage
 - Files: `*.spec.ts` or `*.test.ts`
@@ -171,5 +171,5 @@ export default defineConfig({
 
 - ! Include TSDoc comments for all exported APIs
 - ! Use strict TypeScript; ⊗ use `any`
-- ! See [testing.md](../tools/testing.md) for testing requirements
+- ! See [testing.md](../coding/testing.md) for testing requirements
 - ! Run `task check` before commit

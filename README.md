@@ -631,10 +631,13 @@ warping-0.2.0/
 ├── main.md                # Entry point - general AI guidelines
 │
 ├── core/                  # Core framework files
-│   ├── coding.md          # General coding guidelines
 │   ├── project.md         # Project template
 │   ├── user.md            # User preferences (highest precedence)
 │   └── ralph.md           # Ralph loop concept (draft)
+│
+├── coding/                # Coding standards
+│   ├── coding.md          # General coding guidelines
+│   └── testing.md         # Testing standards
 │
 ├── languages/             # Language-specific standards
 │   ├── cpp.md
@@ -652,8 +655,7 @@ warping-0.2.0/
 │   ├── git.md             # Git conventions
 │   ├── github.md          # GitHub workflows
 │   ├── taskfile.md        # Task automation
-│   ├── telemetry.md       # Observability
-│   └── testing.md         # Testing standards
+│   └── telemetry.md       # Observability
 │
 ├── swarm/                 # Multi-agent coordination
 │   └── swarm.md           # Swarm guidelines
@@ -673,7 +675,8 @@ warping-0.2.0/
 ### 🔧 Core Files
 
 **main.md** - Entry point, general AI guidelines
-**core/coding.md** - Software development standards
+**coding/coding.md** - Software development standards
+**coding/testing.md** - Testing standards
 **core/project.md** - Project-specific template
 **core/user.md** - Your personal preferences (highest precedence)
 
@@ -696,7 +699,6 @@ warping-0.2.0/
 **tools/taskfile.md** - Task automation best practices
 **tools/git.md** - Commit conventions, safety
 **tools/github.md** - GitHub workflows
-**tools/testing.md** - Universal testing standards
 **tools/telemetry.md** - Logging, tracing, metrics
 
 ### 🐝 Swarm

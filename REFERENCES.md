@@ -16,7 +16,7 @@
 
 ### When Writing Code
 
-1. **[core/coding.md](./core/coding.md)** - General coding guidelines
+1. **[coding/coding.md](./coding/coding.md)** - General coding guidelines
    - Load: For any software development task
    - Contains: modularity, contracts, error handling, change management
 
@@ -46,7 +46,7 @@ Load as needed:
 - **[tools/git.md](./tools/git.md)** - Before committing (commit conventions)
 - **[tools/github.md](./tools/github.md)** - When setting up CI/CD, PRs, issues
 - **[tools/taskfile.md](./tools/taskfile.md)** - When creating/modifying tasks
-- **[tools/testing.md](./tools/testing.md)** - When writing tests or checking coverage
+- **[coding/testing.md](./coding/testing.md)** - When writing tests or checking coverage
 - **[tools/telemetry.md](./tools/telemetry.md)** - When implementing logging, tracing, metrics
 
 ### When Working in a Swarm
@@ -111,7 +111,7 @@ user.md (check for personal preferences)
 Load order:
 1. main.md (always)
 2. core/user.md (always)
-3. core/coding.md (writing code)
+3. coding/coding.md (writing code)
 4. languages/python.md (Python-specific)
 5. interfaces/rest.md (REST API design)
 6. core/project.md (check for overrides)
@@ -120,7 +120,7 @@ Load order:
 Load order:
 1. main.md (always)
 2. core/user.md (always)
-3. tools/testing.md (testing standards)
+3. coding/testing.md (testing standards)
 4. languages/go.md (Go-specific testing)
 5. core/project.md (coverage requirements)
 
@@ -136,7 +136,7 @@ Load order:
 1. main.md (always)
 2. core/user.md (always)
 3. swarm/swarm.md (swarm patterns)
-4. core/coding.md (coding standards)
+4. coding/coding.md (coding standards)
 5. tools/git.md (commit conventions with task IDs)
 
 ## 💡 Tips for Agents
@@ -156,6 +156,6 @@ Load order:
 - These are for continuous improvement
 
 **When In Doubt:**
-- Start with main.md and core/coding.md
+- Start with main.md and coding/coding.md
 - Add language/interface files as task becomes clear
 - Check project.md if behavior seems inconsistent

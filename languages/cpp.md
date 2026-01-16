@@ -12,7 +12,7 @@ Legend (from RFC2119): !=MUST, ~=SHOULD, ≉=SHOULD NOT, ⊗=MUST NOT, ?=MAY.
 - ! Doxygen comments for all public APIs (classes, functions, namespaces)
 
 ### Testing
-See [testing.md](../tools/testing.md) for universal requirements.
+See [testing.md](../coding/testing.md) for universal requirements.
 
 - ! Use Catch2 or GoogleTest (+ GoogleMock for mocking)
 - Files: `test_*.cpp` or `*_test.cpp`
@@ -117,7 +117,7 @@ task check              # Pre-commit (! run: fmt+lint+build+test)
 ## Compliance Checklist
 
 - ! Include Doxygen comments for all public APIs
-- ! See [testing.md](../tools/testing.md) for testing requirements
+- ! See [testing.md](../coding/testing.md) for testing requirements
 - ! Use clang-format and clang-tidy
 - ! Follow C++ Core Guidelines for interfaces, resource management, and safety
 - ~ Use GSL types (`gsl::span`, `gsl::not_null`) for bounds/null safety

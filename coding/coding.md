@@ -73,7 +73,7 @@ See [../tools/git.md](../tools/git.md) for:
 - ~ Prioritize code quality and readability over backwards compatibility
 
 **Testing:**
-- See [../tools/testing.md](../tools/testing.md) for universal requirements
+- See [../coding/testing.md](../coding/testing.md) for universal requirements
 - ! ≥85% test coverage
 - ! Run `task test:coverage` to verify
 

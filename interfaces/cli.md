@@ -59,7 +59,7 @@ Tags: Py=Python; TS=TypeScript; Node=Node.js
 
 ## Testing
 
-See [testing.md](../tools/testing.md) for universal requirements.
+See [testing.md](../coding/testing.md) for universal requirements.
 
 - ! Test all command paths, format options, error conditions
 - ~ Snapshot test output formats (CLI output, help text)

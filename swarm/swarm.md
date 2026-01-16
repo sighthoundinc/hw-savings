@@ -6,7 +6,7 @@ Legend (from RFC2119): !=MUST, ~=SHOULD, ≉=SHOULD NOT, ⊗=MUST NOT, ?=MAY.
 
 **Scope:** Guidelines for multiple AI agents working on the same codebase concurrently.
 
-**⚠️ See also**: [coding.md](../core/coding.md) | [taskfile.md](../tools/taskfile.md) | [git.md](../tools/git.md)
+**⚠️ See also**: [coding.md](../coding/coding.md) | [taskfile.md](../tools/taskfile.md) | [git.md](../tools/git.md)
 
 ## Communication Protocols
 
@@ -279,7 +279,7 @@ task check
 
 ## References
 
-- [coding.md](../core/coding.md) - General coding standards
+- [coding.md](../coding/coding.md) - General coding standards
 - [git.md](../tools/git.md) - Commit conventions, branch strategy
 - [taskfile.md](../tools/taskfile.md) - Build and test automation
-- [testing.md](../tools/testing.md) - Testing requirements
+- [testing.md](../coding/testing.md) - Testing requirements

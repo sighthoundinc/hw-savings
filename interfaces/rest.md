@@ -169,7 +169,7 @@ Trade-off: flexibility vs response size
 
 ## Testing
 
-See [testing.md](../tools/testing.md) for universal requirements.
+See [testing.md](../coding/testing.md) for universal requirements.
 
 - ! Unit tests: individual endpoints, edge cases
 - ! Integration tests: full workflows, realistic scenarios

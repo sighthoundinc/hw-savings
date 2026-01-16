@@ -6,7 +6,7 @@ Legend (from RFC2119): !=MUST, ~=SHOULD, ≉=SHOULD NOT, ⊗=MUST NOT, ?=MAY.
 
 **Scope:** Observability, monitoring, and debugging across all modes.
 
-**⚠️ See also**: [main.md](../main.md) | [coding.md](../core/coding.md)
+**⚠️ See also**: [main.md](../main.md) | [coding.md](../coding/coding.md)
 
 ## Mode-Specific Requirements
 
