@@ -372,19 +372,21 @@ Because this tool is often used live in sales conversations and demos, small cha
 
 ## GitHub Pages & Squarespace embedding
 
+- Canonical repository: `https://github.com/sighthoundinc/hw-savings`
 - Enable GitHub Pages for this repository:
   - In GitHub, go to **Settings → Pages**.
   - Under **Source**, choose **Deploy from branch**.
   - Select the `main` branch and `/ (root)` folder.
 - Expected public URL:
-  - `https://iharis93.github.io/savings-calculator/`
-- The app uses **relative paths** for local assets (no leading `/`), so it works correctly when served from `/savings-calculator/` on GitHub Pages and inside an `<iframe>` on another site.
+  - `https://sighthoundinc.github.io/hw-savings/`
+- Note: use **relative paths** for local assets (no leading `/`) because GitHub Pages serves this app from `/hw-savings/`.
+  - When adding assets, prefer paths like `assets/...` instead of `/assets/...` so the app continues to work inside an `<iframe>`.
 
 Squarespace embed example:
 
 ```html
 <iframe
-  src="https://iharis93.github.io/savings-calculator/"
+  src="https://sighthoundinc.github.io/hw-savings/"
   style="width: 100%; min-height: 700px; border: 0;"
   loading="lazy"
 ></iframe>
@@ -392,7 +394,6 @@ Squarespace embed example:
 
 - In Squarespace, add a **Code** block and paste the `<iframe>` snippet.
 - If you change the GitHub Pages settings or repository name, update the `src` URL to match.
-
 ## 11) Changelog
 
 - **2026-01-13**
