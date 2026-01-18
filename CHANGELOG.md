@@ -82,6 +82,30 @@ This project uses date-based entries rather than semantic version numbers. Dates
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### Added
+- **SCM Directory**: Created `scm/` directory for source control management standards
+  - `scm/git.md` - Git workflow and conventions
+  - `scm/github.md` - GitHub workflows and releases
+  - `scm/changelog.md` - Changelog maintenance standards (releases only)
+- **Versioning Standards**: Added `core/versioning.md` with RFC2119-style Semantic Versioning guide
+  - Applies to all software types (APIs, UIs, CLIs, libraries)
+  - Decision trees, examples, and FAQ
+  - Integration with git tags and GitHub releases
+
+### Changed
+- **SCM Reorganization**: Moved `tools/git.md` and `tools/github.md` to `scm/` directory
+- **Documentation Standards**: All technical docs now use strict RFC2119 notation
+  - Use symbols (!, ~, ?, ⊗, ≉) only, no redundant MUST/SHOULD keywords
+  - Minimizes token usage while maintaining clarity
+- **Internal References**: All docs reference internal files instead of external websites
+  - semver.org → `core/versioning.md`
+  - keepachangelog.com → `scm/changelog.md`
+
+### Fixed
+- Removed all redundant MUST/SHOULD/MAY keywords from technical documentation
+- Corrected RFC2119 syntax throughout framework (swarm.md, git.md, github.md)
+- Fixed grammar issues in changelog.md
+
 ## [0.2.0] - 2026-01-18
 
 ### Added
