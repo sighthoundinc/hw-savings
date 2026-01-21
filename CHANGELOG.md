@@ -82,6 +82,19 @@ This project uses date-based entries rather than semantic version numbers. Dates
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<<<<<<< HEAD
+=======
+## [0.2.2] - 2026-01-21
+
+### Added
+- **LICENSE.md**: Added license file with temporary usage terms through 2026
+  - Permission to use (but not distribute) for repository collaborators
+  - Future plans for permissive license preventing resale
+- **Copyright Notice**: Added copyright to README.md with contact email
+
+## [0.2.1] - 2026-01-18
+
+>>>>>>> 1255926 (docs: update CHANGELOG.md for v0.2.2 release)
 ### Added
 - **SCM Directory**: Created `scm/` directory for source control management standards
   - `scm/git.md` - Git workflow and conventions
@@ -105,8 +118,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed all redundant MUST/SHOULD/MAY keywords from technical documentation
 - Corrected RFC2119 syntax throughout framework (swarm.md, git.md, github.md)
 - Fixed grammar issues in changelog.md
-
-## [0.2.0] - 2026-01-18
 
 ### Added
 
