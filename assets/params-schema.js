@@ -154,10 +154,43 @@
     return sp.toString();
   }
 
+  function assertCanonicalRoundTrip(params) {
+    // Dev-only guard to detect drift between canonical params and URL round-trip.
+    try {
+      const inputNormalized = normalizeParams(params || {});
+      const canonicalInput = {};
+      ORDER.forEach((key) => {
+        canonicalInput[key] = inputNormalized[key];
+      });
+
+      const search = buildSearchFromParams(canonicalInput);
+      const roundTrippedRaw = readParamsFromUrl(search ? '?' + search : '');
+      const roundTrippedNormalized = normalizeParams(roundTrippedRaw);
+      const canonicalRoundTripped = {};
+      ORDER.forEach((key) => {
+        canonicalRoundTripped[key] = roundTrippedNormalized[key];
+      });
+
+      const a = JSON.stringify(canonicalInput);
+      const b = JSON.stringify(canonicalRoundTripped);
+
+      if (a !== b && typeof console !== 'undefined' && console && typeof console.warn === 'function') {
+        console.warn('[SighthoundParams] Canonical URL round-trip mismatch.', {
+          from: canonicalInput,
+          to: canonicalRoundTripped,
+          search,
+        });
+      }
+    } catch (_err) {
+      // URL parity is a diagnostic guard only; never throw.
+    }
+  }
+
   return {
     DEFAULTS,
     readParamsFromUrl,
     normalizeParams,
     buildSearchFromParams,
+    assertCanonicalRoundTrip,
   };
 });

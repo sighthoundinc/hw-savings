@@ -82,6 +82,24 @@
 
   const DEFAULTS = Params.DEFAULTS || {};
 
+  function assertUrlParityGuard(state) {
+    if (!state || !Params || typeof Params.assertCanonicalRoundTrip !== 'function') {
+      return;
+    }
+    try {
+      Params.assertCanonicalRoundTrip(state.getParams());
+    } catch (_err) {
+      // Guard is best-effort only.
+    }
+    state.subscribe((params) => {
+      try {
+        Params.assertCanonicalRoundTrip(params);
+      } catch (_err) {
+        // Never throw from diagnostics.
+      }
+    });
+  }
+
   function setSectionEnabled(sectionEl, enabled) {
     if (!sectionEl) return;
     if (enabled) {
@@ -209,7 +227,11 @@
     // Camera cost input helper
     if (standardIpCameraCostGroup) {
       show(standardIpCameraCostGroup);
-      standardIpCameraCostGroup.classList.remove('opacity-60', 'pointer-events-none');
+      if (scenario === 'b') {
+        standardIpCameraCostGroup.classList.add('opacity-60', 'pointer-events-none');
+      } else {
+        standardIpCameraCostGroup.classList.remove('opacity-60', 'pointer-events-none');
+      }
     }
     if (scenarioBNote) {
       if (scenario === 'b') show(scenarioBNote); else hide(scenarioBNote);
@@ -495,4 +517,7 @@
   // Subscribe to state changes and render
   state.subscribe(render);
   render(state.getParams());
+
+  // Dev-only: guard against URL/params drift using canonical round-trip.
+  assertUrlParityGuard(state);
 })();

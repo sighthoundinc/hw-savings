@@ -77,6 +77,9 @@
   var downloadPdfBtn = document.getElementById('guidedDownloadPdf');
   var editInputsBtn = document.getElementById('guidedEditInputs');
   var startOverBtn = document.getElementById('guidedStartOver');
+  var quickEditStep1Btn = document.getElementById('guidedQuickEditStep1');
+  var quickEditStep2Btn = document.getElementById('guidedQuickEditStep2');
+  var quickEditStep3Btn = document.getElementById('guidedQuickEditStep3');
 
   function clampStepIndex(index) {
     if (index < 0) return 0;
@@ -190,6 +193,16 @@
       ipCostInput.value = typeof p.ipCost === 'number' && p.ipCost > 0
         ? String(p.ipCost)
         : '';
+      // Scenario B (existing IP cameras) reuses camera hardware; IP cost is not part of
+      // new hardware totals and is treated as informational only.
+      var scenarioForIp = inferScenarioFromParams(p);
+      var lockIpCost = scenarioForIp === 'existingIp';
+      ipCostInput.disabled = !!lockIpCost;
+      if (lockIpCost) {
+        ipCostInput.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+      } else {
+        ipCostInput.classList.remove('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+      }
     }
 
     if (softwareLpr && softwareMmcg) {
@@ -530,6 +543,30 @@
     });
   }
 
+  function quickEditToStep(stepIndex) {
+    markResultsStale();
+    goToStep(stepIndex);
+    if (form) {
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  if (quickEditStep1Btn) {
+    quickEditStep1Btn.addEventListener('click', function () {
+      quickEditToStep(0);
+    });
+  }
+  if (quickEditStep2Btn) {
+    quickEditStep2Btn.addEventListener('click', function () {
+      quickEditToStep(1);
+    });
+  }
+  if (quickEditStep3Btn) {
+    quickEditStep3Btn.addEventListener('click', function () {
+      quickEditToStep(2);
+    });
+  }
+
   if (startOverBtn) {
     startOverBtn.addEventListener('click', function () {
       var base = Params.DEFAULTS || {};
@@ -562,5 +599,22 @@
   var initialParams = state.getParams();
   hydrateFromParams(initialParams);
   updateStepUi();
+
+  // Dev-only: guard against URL/params drift using canonical round-trip.
+  if (Params && typeof Params.assertCanonicalRoundTrip === 'function') {
+    try {
+      Params.assertCanonicalRoundTrip(initialParams);
+    } catch (_err) {
+      // Best-effort only.
+    }
+    state.subscribe(function (params) {
+      try {
+        Params.assertCanonicalRoundTrip(params);
+      } catch (_err) {
+        // Never throw from diagnostics.
+      }
+    });
+  }
+
   // Initial view: wizard only; results appear after the user clicks "Show estimate".
 })();
