@@ -174,22 +174,35 @@
                 Your setup
               </h2>
               <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                Enter your camera count and typical hardware costs for your deployment.
+                Answer a few questions about your deployment. Results update as you go.
               </p>
 
-              <div class="space-y-4">
+              <!-- SECTION 1: CAMERAS -->
+              <div id="sectionCameras" class="space-y-4">
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 flex items-center gap-2 dark:text-slate-400">
+                  <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-900 text-[11px] font-semibold text-white">1</span>
+                  <span>Cameras</span>
+                </h3>
                 <!-- Total cameras -->
                 <div class="space-y-1.5">
                   <label
                     for="totalCameras"
                     class="block text-sm font-medium text-slate-700 dark:text-slate-200"
                   >
-                    Total cameras
+                    Total number of cameras
                     <span
                       class="ml-2 inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-rose-600 dark:bg-rose-950/40 dark:text-rose-300"
                     >
                       Required
                     </span>
+                    <button
+                      type="button"
+                      class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 bg-white text-[10px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                      data-helper-target="totalCamerasHelper"
+                      aria-label="Help: total number of cameras"
+                    >
+                      ⓘ
+                    </button>
                   </label>
                   <input
                     id="totalCameras"
@@ -201,20 +214,109 @@
                     placeholder="Total cameras"
                     class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
                   />
-                  <p class="text-xs text-slate-500 dark:text-slate-400">
-                    Enter the total number of camera channels in your deployment.
+                  <p
+                    id="totalCamerasHelper"
+                    class="text-xs text-slate-500 dark:text-slate-400 hidden"
+                  >
+                    The total number of camera streams you want to analyze. Each camera counts as one stream.
                   </p>
                 </div>
 
+                <!-- Existing standard IP cameras toggle -->
+                <div class="space-y-1.5">
+                  <p class="block text-sm font-medium text-slate-700 dark:text-slate-200">
+                    Do you already have standard IP cameras installed?
+                    <button
+                      type="button"
+                      class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 bg-white text-[10px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                      data-helper-target="standardIpHelper"
+                      aria-label="Help: standard IP cameras"
+                    >
+                      ⓘ
+                    </button>
+                  </p>
+                  <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                    <input
+                      id="existingCamerasToggle"
+                      type="checkbox"
+                      class="h-3.5 w-3.5 rounded border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600"
+                    />
+                    <label for="existingCamerasToggle" class="select-none">
+                      Yes, we already have standard IP cameras installed.
+                    </label>
+                  </div>
+                  <p
+                    id="standardIpHelper"
+                    class="text-xs text-slate-500 dark:text-slate-400 hidden"
+                  >
+                    Standard IP cameras capture video only. They do not run analytics like license plate recognition inside the camera.
+                  </p>
+                </div>
+
+                <!-- Smart / edge cameras toggle -->
+                <div class="space-y-1.5">
+                  <p class="block text-sm font-medium text-slate-700 dark:text-slate-200">
+                    Do you currently use smart / edge cameras with built-in analytics?
+                    <button
+                      type="button"
+                      class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 bg-white text-[10px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                      data-helper-target="smartCamerasHelper"
+                      aria-label="Help: smart / edge cameras"
+                    >
+                      ⓘ
+                    </button>
+                  </p>
+                  <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                    <input
+                      id="smartCamerasToggle"
+                      type="checkbox"
+                      class="h-3.5 w-3.5 rounded border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600"
+                    />
+                    <label for="smartCamerasToggle" class="select-none">
+                      Yes, we currently use smart / edge cameras with built-in analytics.
+                    </label>
+                  </div>
+                  <p
+                    id="smartCamerasHelper"
+                    class="text-xs text-slate-500 dark:text-slate-400 hidden"
+                  >
+                    Smart or edge cameras process analytics inside the camera itself and typically cost more because each unit includes compute and software.
+                  </p>
+                  <p
+                    id="cameraTypeExclusivityNote"
+                    class="text-xs text-amber-700 dark:text-amber-400 hidden"
+                  >
+                    A camera cannot be both standard and smart at the same time.
+                  </p>
+                </div>
+              </div>
+
+              <!-- SECTION 2: CURRENT APPROACH (SMART CAMERAS) -->
+              <div
+                id="sectionCurrentApproach"
+                class="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700"
+              >
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 flex items-center gap-2 dark:text-slate-400">
+                  <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-900 text-[11px] font-semibold text-white">2</span>
+                  <span>Current approach (smart cameras)</span>
+                </h3>
                 <!-- Smart camera cost -->
                 <div class="space-y-1.5">
                   <label
                     for="smartCameraCost"
                     class="block text-sm font-medium text-slate-700 dark:text-slate-200"
                   >
-                    Smart camera cost (today)
+                    Estimated cost per smart camera
+                    <button
+                      type="button"
+                      class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 bg-white text-[10px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                      data-helper-target="smartCameraHelper"
+                      aria-label="Help: smart camera cost"
+                    >
+                      ⓘ
+                    </button>
                   </label>
-                  <div class="relative rounded-lg shadow-sm">
+                  <div class="relative rounded-lg shadow-sm max-w-xs">
                     <div
                       class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500 text-sm"
                     >
@@ -231,20 +333,42 @@
                       class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2 text-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
                     />
                   </div>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">
-                    Per smart AI camera (hardware only).
+                  <p
+                    id="smartCameraHelper"
+                    class="text-xs text-slate-500 dark:text-slate-400 hidden"
+                  >
+                    Used only as a comparison baseline representing what you typically pay today for smart or edge cameras.
                   </p>
                 </div>
+              </div>
 
-                <!-- IP camera cost -->
-                <div class="space-y-1.5">
+              <!-- SECTION 3: WITH SIGHTHOUND -->
+              <div
+                id="sectionSighthound"
+                class="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700"
+              >
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500 flex items-center gap-2 dark:text-slate-400">
+                  <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-900 text-[11px] font-semibold text-white">3</span>
+                  <span>With Sighthound Compute Node</span>
+                </h3>
+
+                <!-- Standard IP camera cost (only when not reusing cameras) -->
+                <div id="standardIpCameraCostGroup" class="space-y-1.5">
                   <label
                     for="dumbCameraCost"
                     class="block text-sm font-medium text-slate-700 dark:text-slate-200"
                   >
-                    IP camera cost (with Sighthound)
+                    Estimated cost per standard IP camera
+                    <button
+                      type="button"
+                      class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 bg-white text-[10px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                      data-helper-target="standardIpCostHelper"
+                      aria-label="Help: standard IP camera cost"
+                    >
+                      ⓘ
+                    </button>
                   </label>
-                  <div class="relative rounded-lg shadow-sm">
+                  <div class="relative rounded-lg shadow-sm max-w-xs">
                     <div
                       class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500 text-sm"
                     >
@@ -261,49 +385,156 @@
                       class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2 text-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
                     />
                   </div>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">
-                    Per IP camera with Sighthound (hardware only).
+                  <p
+                    id="standardIpCostHelper"
+                    class="text-xs text-slate-500 dark:text-slate-400 hidden"
+                  >
+                    Typical hardware cost for a basic IP camera without analytics.
                   </p>
                 </div>
-              </div>
+                <p
+                  id="scenarioBNote"
+                  class="text-xs text-slate-500 dark:text-slate-400 hidden"
+                >
+                  Existing cameras are reused. No camera hardware replacement assumed.
+                </p>
 
-              <!-- Optional software cost input -->
-              <div class="mt-4 border-t border-slate-200 pt-4 space-y-2 dark:border-slate-700">
-                <h3 class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                  <span>Optional: your current software cost</span>
-                  <span
-                    class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                <!-- Sighthound software selection -->
+                <div class="space-y-2">
+                  <p class="text-sm font-medium text-slate-700 dark:text-slate-200">
+                    Sighthound software analytics
+                    <button
+                      type="button"
+                      class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 bg-white text-[10px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                      data-helper-target="softwareMainHelper"
+                      aria-label="Help: Sighthound software analytics"
+                    >
+                      ⓘ
+                    </button>
+                  </p>
+                  <p
+                    id="softwareMainHelper"
+                    class="text-xs text-slate-500 dark:text-slate-400 hidden"
                   >
-                    Optional
-                  </span>
-                </h3>
+                    Software is priced per camera stream and billed separately from hardware.
+                  </p>
+                  <div class="mt-1 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                    <label class="flex items-start gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 cursor-pointer dark:border-slate-700 dark:bg-slate-900">
+                      <input
+                        type="radio"
+                        name="softwareSelection"
+                        value="lpr"
+                        class="mt-0.5 h-3.5 w-3.5 text-sky-600 border-slate-300 focus:ring-sky-500 dark:border-slate-600"
+                      />
+                      <span class="flex flex-col">
+                        <span class="font-medium text-slate-800 dark:text-slate-100">
+                          LPR only
+                          <button
+                            type="button"
+                            class="ml-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full border border-slate-300 bg-white text-[9px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                            data-helper-target="lprHelper"
+                            aria-label="Help: LPR only"
+                          >
+                            ⓘ
+                          </button>
+                        </span>
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400">$30 / camera / month</span>
+                        <span
+                          id="lprHelper"
+                          class="text-[11px] text-slate-500 dark:text-slate-400 hidden"
+                        >
+                          License Plate Recognition analytics per camera stream.
+                        </span>
+                      </span>
+                    </label>
+                    <label class="flex items-start gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 cursor-pointer dark:border-slate-700 dark:bg-slate-900">
+                      <input
+                        type="radio"
+                        name="softwareSelection"
+                        value="mmcg"
+                        class="mt-0.5 h-3.5 w-3.5 text-sky-600 border-slate-300 focus:ring-sky-500 dark:border-slate-600"
+                      />
+                      <span class="flex flex-col">
+                        <span class="font-medium text-slate-800 dark:text-slate-100">
+                          MMCG only
+                          <button
+                            type="button"
+                            class="ml-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full border border-slate-300 bg-white text-[9px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                            data-helper-target="mmcgHelper"
+                            aria-label="Help: MMCG only"
+                          >
+                            ⓘ
+                          </button>
+                        </span>
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400">$30 / camera / month</span>
+                        <span
+                          id="mmcgHelper"
+                          class="text-[11px] text-slate-500 dark:text-slate-400 hidden"
+                        >
+                          Make / Model / Color / Generation (vehicle analytics) per camera stream.
+                        </span>
+                      </span>
+                    </label>
+                    <label class="flex items-start gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 cursor-pointer dark:border-slate-700 dark:bg-slate-900">
+                      <input
+                        type="radio"
+                        name="softwareSelection"
+                        value="both"
+                        checked
+                        class="mt-0.5 h-3.5 w-3.5 text-sky-600 border-slate-300 focus:ring-sky-500 dark:border-slate-600"
+                      />
+                      <span class="flex flex-col">
+                        <span class="font-medium text-slate-800 dark:text-slate-100">
+                          Both (LPR + MMCG)
+                          <button
+                            type="button"
+                            class="ml-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full border border-slate-300 bg-white text-[9px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                            data-helper-target="bothHelper"
+                            aria-label="Help: LPR + MMCG"
+                          >
+                            ⓘ
+                          </button>
+                        </span>
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400">$55 / camera / month</span>
+                        <span
+                          id="bothHelper"
+                          class="text-[11px] text-slate-500 dark:text-slate-400 hidden"
+                        >
+                          Combined LPR and MMCG analytics per camera stream.
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Billing frequency -->
                 <div class="space-y-1.5">
                   <label
-                    for="currentSoftwareCostPerCamera"
+                    for="softwareBillingFrequency"
                     class="block text-sm font-medium text-slate-700 dark:text-slate-200"
                   >
-                    Your current software cost per camera per month (optional)
-                  </label>
-                  <div class="relative rounded-lg shadow-sm max-w-xs">
-                    <div
-                      class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500 text-sm"
+                    Billing frequency
+                    <button
+                      type="button"
+                      class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 bg-white text-[10px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                      data-helper-target="billingHelper"
+                      aria-label="Help: billing frequency"
                     >
-                      $
-                    </div>
-                    <input
-                      id="currentSoftwareCostPerCamera"
-                      type="number"
-                      inputmode="decimal"
-                      min="0"
-                      max="1000"
-                      step="1"
-                      placeholder="e.g. 40"
-                      class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2 text-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
-                    />
-                  </div>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">
-                    This is not included in the hardware savings above. We assume Sighthound software at
-                    <span class="font-medium">$30 / camera / month</span> when showing the optional software comparison.
+                      ⓘ
+                    </button>
+                  </label>
+                  <select
+                    id="softwareBillingFrequency"
+                    class="mt-1 block max-w-xs rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+                  >
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly (annualized)</option>
+                  </select>
+                  <p
+                    id="billingHelper"
+                    class="text-xs text-slate-500 dark:text-slate-400 hidden"
+                  >
+                    This only affects recurring software cost. Hardware costs and savings do not change.
                   </p>
                 </div>
               </div>
@@ -317,7 +548,7 @@
                   <span aria-hidden="true" class="mr-1.5 text-[0.8rem]">
                     ↻
                   </span>
-                  <span>Reset calculations</span>
+                  <span>Reset inputs</span>
                 </button>
               </div>
             </section>
@@ -359,7 +590,7 @@
                     <!-- Today -->
                     <div class="border border-slate-200 rounded-lg p-4 flex flex-col gap-1.5 dark:border-slate-700">
                       <p class="flex items-center justify-between gap-2 text-xs font-medium text-slate-600 uppercase tracking-wide dark:text-slate-400">
-                        <span>Today  smart AI cameras</span>
+                        <span id="todayLabelText">Today  smart AI cameras</span>
                         <span
                           class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-slate-800 dark:text-slate-300"
                         >
@@ -377,7 +608,7 @@
                     <!-- Sighthound -->
                     <div class="border border-sky-300 rounded-lg p-4 flex flex-col gap-1.5 bg-sky-50/70 shadow-sm dark:border-sky-500/70 dark:bg-sky-950/40">
                       <p class="text-xs font-medium text-slate-700 uppercase tracking-wide flex items-center justify-between gap-2 dark:text-slate-100">
-                        <span>With Sighthound Compute Hardware</span>
+                        <span id="sighthoundLabelText">With Sighthound Compute Hardware</span>
                         <span class="inline-flex items-center rounded-full bg-sky-600/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-700 dark:bg-sky-500/20 dark:text-sky-200">
                           After
                         </span>
@@ -391,27 +622,7 @@
                     </div>
                   </div>
 
-                  <div class="mt-3 space-y-1 rounded-lg border border-slate-200 bg-slate-50/80 p-3 dark:border-slate-700 dark:bg-slate-900/60">
-                    <div class="flex items-start gap-2">
-                      <input
-                        id="existingCamerasToggle"
-                        type="checkbox"
-                        class="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600"
-                      />
-                      <label
-                        for="existingCamerasToggle"
-                        class="text-xs font-medium text-slate-700 dark:text-slate-300"
-                      >
-                        We already have standard IP cameras installed in this system.
-                      </label>
-                    </div>
-                    <p
-                      id="existingCamerasHelper"
-                      class="text-xs text-slate-500 dark:text-slate-400"
-                    >
-                      Use this if you already have standard IP cameras installed and won't be buying new ones.
-                    </p>
-                  </div>
+                  <!-- Existing camera choice is now configured in the left column (Section 1) -->
 
                   <!-- Progressive breakdown -->
                   <div class="mt-4 border-t border-slate-200 pt-4 dark:border-slate-700">
@@ -421,8 +632,15 @@
                       class="text-xs font-medium text-sky-700 hover:text-sky-800 flex items-center gap-1 dark:text-sky-400 dark:hover:text-sky-300"
                       aria-expanded="false"
                     >
-                      Show breakdown
+                      <span>Show breakdown</span>
+                      <span class="text-[10px]">▼</span>
                     </button>
+                    <p
+                      id="breakdownHelper"
+                      class="mt-1 text-[11px] text-slate-500 dark:text-slate-400 hidden"
+                    >
+                      See exactly how each total is calculated.
+                    </p>
                     <div
                       id="breakdownPanel"
                       class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-600 tabular-nums hidden dark:text-slate-400"
@@ -442,6 +660,20 @@
                           Cameras: 2
                         </p>
                       </div>
+                      <div
+                        id="softwareBreakdown"
+                        class="sm:col-span-2 border-t border-slate-200 pt-2 mt-2 dark:border-slate-700"
+                      >
+                        <p class="font-medium text-slate-700 dark:text-slate-200">
+                          Software (recurring)
+                        </p>
+                        <p
+                          id="softwareBreakdownLine"
+                          class="text-slate-600 dark:text-slate-400"
+                        >
+                          Software costs are calculated per camera per month and shown separately from hardware.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -449,7 +681,7 @@
                 <!-- Savings card -->
                 <div
                   id="primaryCard"
-                  class="rounded-xl shadow-sm border border-slate-200 bg-gradient-to-br from-sky-50/80 via-slate-50 to-emerald-50/80 p-5 sm:p-6 flex flex-col gap-4 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900"
+                  class="rounded-xl shadow-sm border border-slate-200 bg-gradient-to-br from-sky-50/80 via-slate-50 to-emerald-50/80 p-5 sm:p-6 flex flex-col gap-3 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900"
                 >
                   <div class="flex items-start justify-between gap-4">
                     <div>
@@ -457,7 +689,15 @@
                         id="primaryLabel"
                         class="text-sm font-medium text-slate-700 flex items-center gap-1.5 dark:text-slate-200"
                       >
-                        <span> Savings vs today </span>
+                        <span id="primaryLabelText">Savings vs today</span>
+                        <button
+                          type="button"
+                          class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 bg-white text-[10px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                          data-helper-target="savingsHelper"
+                          aria-label="Help: savings"
+                        >
+                          ⓘ
+                        </button>
                       </p>
                       <p
                         id="primaryValue"
@@ -466,7 +706,13 @@
                         $0.00
                       </p>
                       <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                        The difference between your current hardware spend and the Sighthound Compute Hardware approach.
+                        Difference between smart AI cameras (today) and Sighthound Compute Node + standard IP cameras (hardware only).
+                      </p>
+                      <p
+                        id="savingsHelper"
+                        class="mt-1 text-xs text-slate-500 dark:text-slate-400 hidden"
+                      >
+                        Hardware-only comparison.
                       </p>
                     </div>
                     <div class="flex flex-col items-end gap-2">
@@ -491,6 +737,12 @@
                       </div>
                     </div>
                   </div>
+                  <p
+                    id="recommendationText"
+                    class="text-xs text-slate-600 dark:text-slate-300"
+                  >
+                    Enter your camera count and costs to see whether Sighthound is cheaper or more expensive than today.
+                  </p>
                 </div>
 
                 <!-- Secondary metrics -->
@@ -500,7 +752,10 @@
                   <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-50">
                     Deployment details
                   </h3>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">
+                  <p
+                    id="deploymentDetailsIntro"
+                    class="text-xs text-slate-500 dark:text-slate-400"
+                  >
                     A quick breakdown of Compute Nodes required, cost reduction, and cost per camera.
                   </p>
                   <p class="text-[11px] text-slate-500 dark:text-slate-500">
@@ -508,16 +763,32 @@
                   </p>
                   <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                     <div class="space-y-1">
-                      <dt class="text-xs text-slate-500 dark:text-slate-400">Compute Nodes required</dt>
+                      <dt class="text-xs text-slate-500 dark:text-slate-400">
+                        Compute Nodes required
+                        <button
+                          type="button"
+                          class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 bg-white text-[10px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                          data-helper-target="nodesHelper"
+                          aria-label="Help: nodes required"
+                        >
+                          ⓘ
+                        </button>
+                      </dt>
                       <dd
                         id="nodesNeededValue"
                         class="font-medium tabular-nums text-slate-900 dark:text-slate-50"
                       >
                         0
                       </dd>
+                      <p
+                        id="nodesHelper"
+                        class="text-[11px] text-slate-500 dark:text-slate-400 hidden"
+                      >
+                        Each node supports up to 4 cameras. Rounded up.
+                      </p>
                     </div>
 
-                    <div class="space-y-1">
+                    <div id="percentReductionGroup" class="space-y-1">
                       <dt class="text-xs text-slate-500 dark:text-slate-400">% reduction</dt>
                       <dd class="flex items-center gap-1.5">
                         <span
@@ -548,9 +819,25 @@
                     </div>
 
                     <div class="space-y-1">
-                  <dt class="text-xs text-slate-500 dark:text-slate-400">Cost per camera (hardware only)</dt>
+                      <dt
+                        id="costPerCameraLabel"
+                        class="text-xs text-slate-500 dark:text-slate-400"
+                      >
+                        Cost per camera (hardware only)
+                        <button
+                          type="button"
+                          class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 bg-white text-[10px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
+                          data-helper-target="costPerCameraHelper"
+                          aria-label="Help: cost per camera"
+                        >
+                          ⓘ
+                        </button>
+                      </dt>
                       <dd class="space-y-0.5">
-                        <div class="flex items-center justify-between gap-2">
+                        <div
+                          id="costPerCameraBeforeRow"
+                          class="flex items-center justify-between gap-2"
+                        >
                           <span class="text-xs text-slate-500 dark:text-slate-400">Before</span>
                           <span
                             id="costPerCameraBeforeValue"
@@ -559,7 +846,10 @@
                             $0.00
                           </span>
                         </div>
-                        <div class="flex items-center justify-between gap-2">
+                        <div
+                          id="costPerCameraAfterRow"
+                          class="flex items-center justify-between gap-2"
+                        >
                           <span class="text-xs text-slate-500 dark:text-slate-400">After</span>
                           <span
                             id="costPerCameraAfterValue"
@@ -569,24 +859,28 @@
                           </span>
                         </div>
                       </dd>
+                      <p
+                        id="costPerCameraHelper"
+                        class="text-[11px] text-slate-500 dark:text-slate-400 hidden"
+                      >
+                        Average hardware cost across deployment.
+                      </p>
                     </div>
                   </dl>
 
-                  <!-- Optional software monthly comparison -->
+                  <!-- Software overview (recurring, Sighthound only) -->
                   <div
-                    id="softwareComparison"
-                    class="mt-4 hidden border-t border-slate-200 pt-4 space-y-1 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400"
+                    id="softwareOverview"
+                    class="mt-4 border-t border-slate-200 pt-4 space-y-1 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400"
                   >
                     <p class="font-semibold text-slate-700 dark:text-slate-200">
-                      Software costs (monthly, optional estimate)
+                      Sighthound software (recurring)
                     </p>
-                    <p id="softwareCurrentMonthlyLine">Your software per month: </p>
-                    <p id="softwareSighthoundMonthlyLine">Estimated Sighthound software per month: </p>
-                    <p id="softwareDeltaMonthlyLine" class="font-semibold">
-                      Monthly software difference: 
+                    <p id="softwareRecurringSummary">
+                      Software cost will appear here once cameras are entered.
                     </p>
-                    <p>
-                      Software costs are <span class="font-semibold">not included</span> in the hardware totals or savings above.
+                    <p id="softwareBillingNote" class="text-[11px] text-slate-500 dark:text-slate-500">
+                      Software is billed per camera (per stream). Hardware and software costs are kept separate in all totals.
                     </p>
                   </div>
                 </div>
@@ -596,23 +890,9 @@
                   class="rounded-xl shadow-sm border border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100/80 p-5 sm:p-6 flex flex-col gap-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-900 no-print"
                 >
                   <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-50">
-                    Ready to order your trial kit?
+                    Export and next steps
                   </h3>
-                  <label
-                    for="shareDetailsConsent"
-                    class="mt-1 flex items-start gap-2 text-xs text-slate-600 dark:text-slate-400"
-                  >
-                    <input
-                      id="shareDetailsConsent"
-                      type="checkbox"
-                      class="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600"
-                    />
-                    <span>
-                      Share your camera counts, retention, and AI workloads and our
-                      team will size a full solution for you.
-                    </span>
-                  </label>
-                  <div class="mt-2 flex flex-col gap-2">
+                  <div class="mt-1 flex flex-col gap-2">
                     <button
                       id="downloadPdfButton"
                       type="button"
@@ -621,38 +901,64 @@
                       Download estimate as PDF
                     </button>
                     <a
-                      id="primaryCtaLink"
+                      id="contactCtaLink"
                       href="https://www.sighthound.com/contact-us"
                       class="inline-flex items-center justify-center rounded-lg bg-sky-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950"
                       target="_blank"
                       rel="noreferrer"
                     >
-                      Request a trial kit
-                    </a>
-                    <a
-                      id="secondaryCtaLink"
-                      href="mailto:support@sighthound.com"
-                      class="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800"
-                    >
-                      Email support@sighthound.com
+                      Contact Sighthound
                     </a>
                   </div>
                   <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                    Hardware-only estimate.
+                    Hardware is one-time. Software is recurring and shown separately above.
                   </p>
                 </aside>
               </div>
             </section>
           </div>
         </div>
+        <!-- Print-only assumptions section for PDF export -->
+        <section class="mt-6 print-only">
+          <h2 class="text-sm font-semibold text-slate-900">
+            Assumptions &amp; definitions
+          </h2>
+          <ul class="mt-2 text-xs text-slate-700 space-y-1.5">
+            <li>
+              <strong>Total number of cameras:</strong>
+              The total number of camera streams you want to analyze. Each camera counts as one stream.
+            </li>
+            <li>
+              <strong>Standard IP cameras:</strong>
+              Standard IP cameras capture video only. They do not run analytics like license plate recognition inside the camera.
+            </li>
+            <li>
+              <strong>Smart / edge cameras:</strong>
+              Smart or edge cameras process analytics inside the camera itself and typically cost more because each unit includes compute and software.
+            </li>
+            <li>
+              <strong>Savings vs today:</strong>
+              Hardware-only comparison of smart AI cameras today versus Sighthound Compute Node + standard IP cameras.
+            </li>
+            <li>
+              <strong>Compute Nodes required:</strong>
+              Each node supports up to 4 cameras. Rounded up.
+            </li>
+            <li>
+              <strong>Cost per camera:</strong>
+              Average hardware cost across the deployment.
+            </li>
+            <li>
+              <strong>Sighthound software analytics:</strong>
+              Software is priced per camera stream and billed separately from hardware.
+            </li>
+          </ul>
+        </section>
       </main>
     </div>
 
     <script>
-      // Constants (hidden from UI)
-      const CONTACT_BASE_URL = "https://www.sighthound.com/contact-us";
-      const SUPPORT_EMAIL = "support@sighthound.com";
-
+      // Core calculator helpers
       const Calculator = window.SighthoundCalculator;
 
       // Calculator wiring
@@ -660,10 +966,16 @@
       const smartCameraCostInput = document.getElementById("smartCameraCost");
       const dumbCameraCostInput = document.getElementById("dumbCameraCost");
       const existingCamerasToggle = document.getElementById("existingCamerasToggle");
-      const existingCamerasHelper = document.getElementById("existingCamerasHelper");
+      const smartCamerasToggle = document.getElementById("smartCamerasToggle");
+      const cameraTypeExclusivityNote = document.getElementById(
+        "cameraTypeExclusivityNote"
+      );
       const resetCalculatorButton = document.getElementById("resetCalculatorButton");
-      const currentSoftwareCostPerCameraInput = document.getElementById(
-        "currentSoftwareCostPerCamera"
+      const softwareSelectionInputs = document.querySelectorAll(
+        'input[name="softwareSelection"]'
+      );
+      const softwareBillingFrequencySelect = document.getElementById(
+        "softwareBillingFrequency"
       );
 
       const defaultSmartCameraCost = smartCameraCostInput
@@ -677,6 +989,7 @@
       const resultsPanel = document.getElementById("resultsPanel");
 
       const primaryLabel = document.getElementById("primaryLabel");
+      const primaryLabelText = document.getElementById("primaryLabelText");
       const primaryValue = document.getElementById("primaryValue");
       const primaryArrow = document.getElementById("primaryArrow");
       const primaryArrowIcon = document.getElementById("primaryArrowIcon");
@@ -686,6 +999,8 @@
       const sighthoundTotalValue = document.getElementById(
         "sighthoundTotalValue"
       );
+      const todayLabelText = document.getElementById("todayLabelText");
+      const sighthoundLabelText = document.getElementById("sighthoundLabelText");
 
       const breakdownToggle = document.getElementById("breakdownToggle");
       const breakdownPanel = document.getElementById("breakdownPanel");
@@ -697,34 +1012,42 @@
         "sighthoundBreakdownCameras"
       );
 
-      const shareDetailsCheckbox = document.getElementById(
-        "shareDetailsConsent"
-      );
-      const primaryCtaLink = document.getElementById("primaryCtaLink");
-      const secondaryCtaLink = document.getElementById("secondaryCtaLink");
+      const recommendationText = document.getElementById("recommendationText");
+      const contactCtaLink = document.getElementById("contactCtaLink");
 
       const nodesNeededValue = document.getElementById("nodesNeededValue");
+      const percentReductionGroup = document.getElementById(
+        "percentReductionGroup"
+      );
       const percentReductionValue = document.getElementById(
         "percentReductionValue"
       );
       const percentArrowIcon = document.getElementById("percentArrowIcon");
+      const costPerCameraLabel = document.getElementById("costPerCameraLabel");
+      const costPerCameraBeforeRow = document.getElementById(
+        "costPerCameraBeforeRow"
+      );
+      const costPerCameraAfterRow = document.getElementById(
+        "costPerCameraAfterRow"
+      );
       const costPerCameraBeforeValue = document.getElementById(
         "costPerCameraBeforeValue"
       );
       const costPerCameraAfterValue = document.getElementById(
         "costPerCameraAfterValue"
       );
-      const softwareComparison = document.getElementById("softwareComparison");
-      const softwareCurrentMonthlyLine = document.getElementById(
-        "softwareCurrentMonthlyLine"
+      const softwareOverview = document.getElementById("softwareOverview");
+      const softwareRecurringSummary = document.getElementById(
+        "softwareRecurringSummary"
       );
-      const softwareSighthoundMonthlyLine = document.getElementById(
-        "softwareSighthoundMonthlyLine"
-      );
-      const softwareDeltaMonthlyLine = document.getElementById(
-        "softwareDeltaMonthlyLine"
-      );
+      const softwareBillingNote = document.getElementById("softwareBillingNote");
       const downloadPdfButton = document.getElementById("downloadPdfButton");
+      const deploymentDetailsIntro = document.getElementById(
+        "deploymentDetailsIntro"
+      );
+      const softwareBreakdownLine = document.getElementById(
+        "softwareBreakdownLine"
+      );
 
       // Keep track of the last numeric results so we can animate between states
       let lastResults = null;
@@ -776,15 +1099,6 @@
         requestAnimationFrame(frame);
       }
 
-      function resetCtaLinks() {
-        if (primaryCtaLink) {
-          primaryCtaLink.href = CONTACT_BASE_URL;
-        }
-        if (secondaryCtaLink) {
-          secondaryCtaLink.href = `mailto:${SUPPORT_EMAIL}`;
-        }
-      }
-
       function syncUrlParams(totalCameras, smartCameraCost, dumbCameraCost) {
         if (!window || !window.history || !window.location) return;
         try {
@@ -805,79 +1119,6 @@
           url.searchParams.delete("dumb");
           window.history.replaceState({}, "", url.toString());
         } catch (e) {}
-      }
-
-      function updateCtaLinks(context) {
-        if (!primaryCtaLink || !secondaryCtaLink || !shareDetailsCheckbox) {
-          return;
-        }
-
-        if (!shareDetailsCheckbox.checked) {
-          resetCtaLinks();
-          return;
-        }
-
-        const {
-          totalCameras,
-          smartCameraCost,
-          dumbCameraCost,
-          nodesNeeded,
-          currentTotal,
-          sighthoundTotal,
-          savings,
-          percentReduction,
-          costPerCameraBefore,
-          costPerCameraAfter,
-        } = context;
-
-        try {
-          const contactUrl = new URL(CONTACT_BASE_URL);
-          contactUrl.searchParams.set("source", "hardware-calculator");
-          contactUrl.searchParams.set("cameras", String(totalCameras));
-          contactUrl.searchParams.set("smart", String(smartCameraCost));
-          contactUrl.searchParams.set("dumb", String(dumbCameraCost));
-          contactUrl.searchParams.set("nodes", String(nodesNeeded));
-          contactUrl.searchParams.set("savings", savings.toFixed(2));
-          contactUrl.searchParams.set("pct", percentReduction.toFixed(1));
-          primaryCtaLink.href = contactUrl.toString();
-        } catch (e) {
-          resetCtaLinks();
-        }
-
-        try {
-          const bodyLines = [
-            "Sighthound Compute Hardware savings calculator details:",
-            "",
-            `Total cameras: ${totalCameras.toLocaleString("en-US")}`,
-            `Smart camera cost (today): ${Calculator.formatCurrency(
-              smartCameraCost
-            )}`,
-            `IP camera cost (with Sighthound): ${Calculator.formatCurrency(
-              dumbCameraCost
-            )}`,
-            "",
-            `Nodes required: ${nodesNeeded.toLocaleString("en-US")}`,
-            `Today total: ${Calculator.formatCurrency(currentTotal)}`,
-            `Sighthound total: ${Calculator.formatCurrency(sighthoundTotal)}`,
-            `Savings: ${Calculator.formatCurrency(savings)} (${Calculator.formatPercent(
-              percentReduction
-            )})`,
-            "",
-            `Cost per camera before: ${Calculator.formatCurrency(
-              costPerCameraBefore
-            )}`,
-            `Cost per camera after: ${Calculator.formatCurrency(costPerCameraAfter)}`,
-            "",
-            `Calculator link: ${window.location.href}`,
-          ];
-          const mailtoParams = new URLSearchParams({
-            subject: "Sighthound hardware calculator estimate",
-            body: bodyLines.join("\n"),
-          });
-          secondaryCtaLink.href = `mailto:${SUPPORT_EMAIL}?${mailtoParams.toString()}`;
-        } catch (e) {
-          secondaryCtaLink.href = `mailto:${SUPPORT_EMAIL}`;
-        }
       }
 
       if (breakdownToggle && breakdownPanel) {
@@ -901,22 +1142,77 @@
 
       if (downloadPdfButton) {
         downloadPdfButton.addEventListener("click", () => {
+          // Ensure breakdown and software details are visible in the exported PDF.
+          if (breakdownPanel && breakdownPanel.classList.contains("hidden")) {
+            breakdownPanel.classList.remove("hidden");
+            if (breakdownToggle) {
+              breakdownToggle.textContent = "Hide breakdown";
+              breakdownToggle.setAttribute("aria-expanded", "true");
+            }
+          }
           window.print();
         });
       }
 
-      if (shareDetailsCheckbox) {
-        shareDetailsCheckbox.addEventListener("change", () => {
-          updateResults();
+      const helperToggleButtons = document.querySelectorAll(
+        "[data-helper-target]"
+      );
+      helperToggleButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const targetId = btn.getAttribute("data-helper-target");
+          if (!targetId) return;
+          const target = document.getElementById(targetId);
+          if (!target) return;
+          target.classList.toggle("hidden");
         });
+      });
+
+      function handleCameraTypeChange(changed) {
+        if (!existingCamerasToggle || !smartCamerasToggle) {
+          updateResults();
+          return;
+        }
+
+        let autoCorrected = false;
+
+        if (
+          changed === "standard" &&
+          existingCamerasToggle.checked &&
+          smartCamerasToggle.checked
+        ) {
+          smartCamerasToggle.checked = false;
+          autoCorrected = true;
+        } else if (
+          changed === "smart" &&
+          smartCamerasToggle.checked &&
+          existingCamerasToggle.checked
+        ) {
+          existingCamerasToggle.checked = false;
+          autoCorrected = true;
+        }
+
+        if (cameraTypeExclusivityNote) {
+          if (autoCorrected) {
+            cameraTypeExclusivityNote.classList.remove("hidden");
+          } else {
+            cameraTypeExclusivityNote.classList.add("hidden");
+          }
+        }
+
+        updateResults();
       }
 
       if (existingCamerasToggle) {
         existingCamerasToggle.addEventListener("change", () => {
-          updateResults();
+          handleCameraTypeChange("standard");
         });
       }
 
+      if (smartCamerasToggle) {
+        smartCamerasToggle.addEventListener("change", () => {
+          handleCameraTypeChange("smart");
+        });
+      }
 
       function resetCalculator() {
         if (totalCamerasInput) {
@@ -928,38 +1224,139 @@
         if (dumbCameraCostInput) {
           dumbCameraCostInput.value = defaultDumbCameraCost;
         }
-        if (shareDetailsCheckbox) {
-          shareDetailsCheckbox.checked = false;
-        }
         if (existingCamerasToggle) {
           existingCamerasToggle.checked = false;
         }
-        if (currentSoftwareCostPerCameraInput) {
-          currentSoftwareCostPerCameraInput.value = "";
+        if (smartCamerasToggle) {
+          smartCamerasToggle.checked = false;
+        }
+        if (cameraTypeExclusivityNote) {
+          cameraTypeExclusivityNote.classList.add("hidden");
+        }
+        if (softwareBillingFrequencySelect) {
+          softwareBillingFrequencySelect.value = "monthly";
+        }
+        if (softwareSelectionInputs && softwareSelectionInputs.length) {
+          softwareSelectionInputs.forEach((input) => {
+            if (input.value === "both") {
+              input.checked = true;
+            } else {
+              input.checked = false;
+            }
+          });
         }
         clearUrlParams();
         updateResults();
       }
 
-      function updateResults() {
-        const hasExistingCameras = existingCamerasToggle
-          ? existingCamerasToggle.checked
-          : false;
-
-        if (existingCamerasHelper) {
-          existingCamerasHelper.textContent = hasExistingCameras
-            ? "Sighthound cost now excludes new camera hardware  using your existing IP cameras."
-            : "Use this if you already have standard IP cameras installed and won't be buying new ones.";
+      function setSectionEnabled(sectionEl, enabled) {
+        if (!sectionEl) return;
+        if (enabled) {
+          sectionEl.classList.remove("opacity-60", "pointer-events-none");
+        } else {
+          sectionEl.classList.add("opacity-60", "pointer-events-none");
         }
+      }
 
-        const currentSoftwarePerCameraRaw = currentSoftwareCostPerCameraInput
-          ? currentSoftwareCostPerCameraInput.value
-          : "";
-        const currentSoftwarePerCamera = currentSoftwarePerCameraRaw.trim()
-          ? Number(currentSoftwarePerCameraRaw)
-          : null;
+      function updateResults() {
+        const sectionCurrentApproach = document.getElementById(
+          "sectionCurrentApproach"
+        );
+        const sectionSighthound = document.getElementById("sectionSighthound");
 
         const totalCamerasRaw = totalCamerasInput ? totalCamerasInput.value : "";
+        const totalCamerasTrimmed = String(totalCamerasRaw ?? "").trim();
+        const totalCamerasParsed = Number(totalCamerasTrimmed);
+        const hasValidTotalCameras =
+          totalCamerasTrimmed !== "" &&
+          Number.isInteger(totalCamerasParsed) &&
+          totalCamerasParsed >= 1 &&
+          totalCamerasParsed <= 10000;
+
+        setSectionEnabled(sectionCurrentApproach, hasValidTotalCameras);
+        setSectionEnabled(sectionSighthound, hasValidTotalCameras);
+
+        const hasStandardIp = existingCamerasToggle
+          ? existingCamerasToggle.checked
+          : false;
+        const hasSmartCameras = smartCamerasToggle
+          ? smartCamerasToggle.checked
+          : false;
+
+        let scenario = "C";
+        if (hasSmartCameras) {
+          scenario = "A";
+        } else if (hasStandardIp) {
+          scenario = "B";
+        }
+
+        if (deploymentDetailsIntro) {
+          if (scenario === "A") {
+            deploymentDetailsIntro.textContent =
+              "A quick breakdown of Compute Nodes required, cost reduction, and cost per camera.";
+          } else if (scenario === "B") {
+            deploymentDetailsIntro.textContent =
+              "How many Compute Nodes you need and the effective hardware cost to enable analytics on existing cameras.";
+          } else {
+            deploymentDetailsIntro.textContent =
+              "How many Compute Nodes you need and the average hardware cost per camera for this deployment.";
+          }
+        }
+
+        if (
+          costPerCameraLabel &&
+          costPerCameraBeforeRow &&
+          costPerCameraAfterRow
+        ) {
+          if (scenario === "A") {
+            costPerCameraLabel.textContent = "Cost per camera (hardware only)";
+            costPerCameraBeforeRow.classList.remove("hidden");
+            costPerCameraAfterRow.classList.remove("hidden");
+          } else if (scenario === "B") {
+            costPerCameraLabel.textContent =
+              "Effective per-camera enablement cost (hardware only)";
+            costPerCameraBeforeRow.classList.add("hidden");
+            costPerCameraAfterRow.classList.remove("hidden");
+          } else {
+            costPerCameraLabel.textContent = "Cost per camera (hardware only)";
+            costPerCameraBeforeRow.classList.add("hidden");
+            costPerCameraAfterRow.classList.remove("hidden");
+          }
+        }
+
+        if (sectionCurrentApproach) {
+          if (scenario === "A") {
+            sectionCurrentApproach.classList.remove("hidden");
+          } else {
+            sectionCurrentApproach.classList.add("hidden");
+          }
+        }
+
+        const standardIpCameraCostGroup = document.getElementById(
+          "standardIpCameraCostGroup"
+        );
+        const scenarioBNote = document.getElementById("scenarioBNote");
+
+        if (standardIpCameraCostGroup) {
+          if (scenario === "A" || scenario === "C") {
+            standardIpCameraCostGroup.classList.remove("hidden");
+            standardIpCameraCostGroup.classList.remove("opacity-60");
+            standardIpCameraCostGroup.classList.remove("pointer-events-none");
+          } else {
+            standardIpCameraCostGroup.classList.add("hidden");
+          }
+        }
+
+        if (scenarioBNote) {
+          if (scenario === "B") {
+            scenarioBNote.classList.remove("hidden");
+          } else {
+            scenarioBNote.classList.add("hidden");
+          }
+        }
+
+        const hasExistingCameras = hasStandardIp && !hasSmartCameras;
+
         const smartCameraCostRaw = smartCameraCostInput
           ? smartCameraCostInput.value
           : "";
@@ -976,7 +1373,15 @@
         if (!baseResult.ok) {
           resultsPanel.classList.add("hidden");
           resultsPlaceholder.classList.remove("hidden");
-          resetCtaLinks();
+          if (recommendationText) {
+            recommendationText.textContent =
+              "Enter a camera count between 1 and 10,000 and valid hardware costs to see the estimate.";
+          }
+          if (softwareRecurringSummary && softwareOverview) {
+            softwareOverview.classList.remove("hidden");
+            softwareRecurringSummary.textContent =
+              "Software cost will appear here once cameras are entered.";
+          }
           return;
         }
 
@@ -1001,21 +1406,33 @@
         const costPerCameraAfter =
           totalCameras === 0 ? 0 : sighthoundTotal / totalCameras;
 
-        // Optional software monthly comparison (does not affect hardware totals)
-        let softwareCurrentMonthly = null;
-        let softwareSighthoundMonthly = null;
-        let softwareDeltaMonthly = null;
+        // Sighthound software recurring cost (does not affect hardware totals)
+        let softwareMonthlyTotal = 0;
+        let softwareYearlyTotal = 0;
+        let effectiveSoftwareTotal = 0;
+        let softwareFrequencyLabel = "per month";
 
-        if (
-          currentSoftwarePerCamera !== null &&
-          Number.isFinite(currentSoftwarePerCamera) &&
-          currentSoftwarePerCamera >= 0
-        ) {
-          softwareCurrentMonthly = totalCameras * currentSoftwarePerCamera;
-          softwareSighthoundMonthly =
-            totalCameras * Calculator.SIGHTHOUND_SOFTWARE_COST_PER_CAMERA;
-          softwareDeltaMonthly =
-            softwareCurrentMonthly - softwareSighthoundMonthly;
+        if (totalCameras > 0 && softwareSelectionInputs) {
+          let selected = "both";
+          softwareSelectionInputs.forEach((input) => {
+            if (input.checked) {
+              selected = input.value;
+            }
+          });
+          const billingFrequency = softwareBillingFrequencySelect
+            ? softwareBillingFrequencySelect.value
+            : "monthly";
+          const perCameraMonthly =
+            Calculator.getSoftwareMonthlyPricePerCamera(selected);
+          softwareMonthlyTotal = totalCameras * perCameraMonthly;
+          softwareYearlyTotal = softwareMonthlyTotal * 12;
+          if (billingFrequency === "yearly") {
+            effectiveSoftwareTotal = softwareYearlyTotal;
+            softwareFrequencyLabel = "per year";
+          } else {
+            effectiveSoftwareTotal = softwareMonthlyTotal;
+            softwareFrequencyLabel = "per month";
+          }
         }
 
         const previousResults = lastResults;
@@ -1030,9 +1447,9 @@
           percentReduction,
           costPerCameraBefore,
           costPerCameraAfter,
-          softwareCurrentMonthly,
-          softwareSighthoundMonthly,
-          softwareDeltaMonthly,
+          softwareMonthlyTotal,
+          softwareYearlyTotal,
+          effectiveSoftwareTotal,
         };
 
         // Toggle panels
@@ -1044,76 +1461,144 @@
 
         const isSavingsPositiveOrZero = savings >= 0;
 
-        // Primary card label + value
-        primaryLabel.textContent = isSavingsPositiveOrZero
-          ? "Savings vs today"
-          : "Extra cost vs today";
-        animateNumberChange(
-          primaryValue,
-          previousResults ? Math.abs(previousResults.savings ?? 0) : null,
-          Math.abs(savings),
-          (val) => Calculator.formatCurrency(val)
-        );
+        // Scenario-specific primary card and savings logic (Scenario A only)
+        if (scenario === "A") {
+          if (primaryCard) {
+            primaryCard.classList.remove("hidden");
+          }
 
-        if (primaryCard) {
-          primaryCard.className =
-            "rounded-xl shadow-sm border p-5 sm:p-6 flex flex-col gap-4 " +
+          if (primaryLabelText) {
+            primaryLabelText.textContent = isSavingsPositiveOrZero
+              ? "Savings vs today"
+              : "Extra cost vs today";
+          }
+          animateNumberChange(
+            primaryValue,
+            previousResults ? Math.abs(previousResults.savings ?? 0) : null,
+            Math.abs(savings),
+            (val) => Calculator.formatCurrency(val)
+          );
+
+          if (primaryCard) {
+            primaryCard.className =
+              "rounded-xl shadow-sm border p-5 sm:p-6 flex flex-col gap-4 " +
+              (isSavingsPositiveOrZero
+                ? "border-slate-200 bg-gradient-to-br from-sky-50/80 via-slate-50 to-emerald-50/80 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900"
+                : "border-rose-100 bg-rose-50/80 dark:border-rose-900 dark:bg-rose-950");
+          }
+
+          if (primaryLabel) {
+            primaryLabel.className =
+              "text-sm font-medium flex items-center gap-1.5 " +
+              (isSavingsPositiveOrZero
+                ? "text-slate-700 dark:text-slate-200"
+                : "text-rose-700 dark:text-rose-300");
+          }
+
+          if (primaryValue) {
+            primaryValue.className =
+              "mt-1 text-3xl sm:text-4xl font-semibold tracking-tight tabular-nums " +
+              (isSavingsPositiveOrZero
+                ? "text-emerald-600 dark:text-emerald-400"
+                : "text-rose-600 dark:text-rose-400");
+          }
+
+          if (recommendationText) {
+            if (isSavingsPositiveOrZero) {
+              recommendationText.textContent =
+                "Based on these inputs, Sighthound Compute Node + standard IP cameras has a lower upfront hardware cost than smart AI cameras.";
+            } else {
+              recommendationText.textContent =
+                "Based on these inputs, Sighthound Compute Node + standard IP cameras has a higher upfront hardware cost than smart AI cameras.";
+            }
+          }
+
+          // Primary arrow styling (down = good / up = bad)
+          primaryArrow.className =
+            "inline-flex h-8 w-8 items-center justify-center rounded-full " +
             (isSavingsPositiveOrZero
-              ? "border-slate-200 bg-gradient-to-br from-sky-50/80 via-slate-50 to-emerald-50/80 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900"
-              : "border-rose-100 bg-rose-50/80 dark:border-rose-900 dark:bg-rose-950");
+              ? "bg-emerald-50 text-emerald-600"
+              : "bg-rose-50 text-rose-600");
+
+          primaryArrowIcon.className =
+            "h-4 w-4 transition-transform duration-150" +
+            (isSavingsPositiveOrZero ? "" : " rotate-180");
+        } else if (primaryCard) {
+          primaryCard.classList.add("hidden");
         }
 
-        if (primaryLabel) {
-          primaryLabel.className =
-            "text-sm font-medium flex items-center gap-1.5 " +
-            (isSavingsPositiveOrZero
-              ? "text-slate-700 dark:text-slate-200"
-              : "text-rose-700 dark:text-rose-300");
+        // Cost comparison block (scenario-specific)
+        if (todayLabelText && sighthoundLabelText) {
+          if (scenario === "A") {
+            todayLabelText.textContent = "Today  smart AI cameras";
+            sighthoundLabelText.textContent =
+              "With Sighthound Compute Hardware";
+          } else if (scenario === "B") {
+            todayLabelText.textContent = "Existing camera hardware";
+            sighthoundLabelText.textContent = "Upfront node cost";
+          } else {
+            todayLabelText.textContent = "Existing camera hardware";
+            sighthoundLabelText.textContent =
+              "New deployment hardware cost (nodes + cameras)";
+          }
         }
 
-        if (primaryValue) {
-          primaryValue.className =
-            "mt-1 text-3xl sm:text-4xl font-semibold tracking-tight tabular-nums " +
-            (isSavingsPositiveOrZero
-              ? "text-emerald-600 dark:text-emerald-400"
-              : "text-rose-600 dark:text-rose-400");
+        if (scenario === "A") {
+          animateNumberChange(
+            currentTotalValue,
+            previousResults ? previousResults.currentTotal : null,
+            currentTotal,
+            (val) => Calculator.formatCurrency(val)
+          );
+          animateNumberChange(
+            sighthoundTotalValue,
+            previousResults ? previousResults.sighthoundTotal : null,
+            sighthoundTotal,
+            (val) => Calculator.formatCurrency(val)
+          );
+        } else if (scenario === "B") {
+          if (currentTotalValue) {
+            currentTotalValue.textContent = "Already installed";
+          }
+          animateNumberChange(
+            sighthoundTotalValue,
+            previousResults ? previousResults.sighthoundTotal : null,
+            sighthoundTotal,
+            (val) => Calculator.formatCurrency(val)
+          );
+        } else {
+          if (currentTotalValue) {
+            currentTotalValue.textContent =
+              "No current cameras (new deployment)";
+          }
+          animateNumberChange(
+            sighthoundTotalValue,
+            previousResults ? previousResults.sighthoundTotal : null,
+            sighthoundTotal,
+            (val) => Calculator.formatCurrency(val)
+          );
         }
-
-        // Primary arrow styling (down = good / up = bad)
-        primaryArrow.className =
-          "inline-flex h-8 w-8 items-center justify-center rounded-full " +
-          (isSavingsPositiveOrZero
-            ? "bg-emerald-50 text-emerald-600"
-            : "bg-rose-50 text-rose-600");
-
-        primaryArrowIcon.className =
-          "h-4 w-4 transition-transform duration-150" +
-          (isSavingsPositiveOrZero ? "" : " rotate-180");
-
-        // Comparison block
-        animateNumberChange(
-          currentTotalValue,
-          previousResults ? previousResults.currentTotal : null,
-          currentTotal,
-          (val) => Calculator.formatCurrency(val)
-        );
-        animateNumberChange(
-          sighthoundTotalValue,
-          previousResults ? previousResults.sighthoundTotal : null,
-          sighthoundTotal,
-          (val) => Calculator.formatCurrency(val)
-        );
 
         if (todayBreakdownLine) {
-          animateNumberChange(
-            todayBreakdownLine,
-            previousResults ? previousResults.totalCameras : null,
-            totalCameras,
-            (val) =>
-              `Cameras: ${Math.round(val).toLocaleString(
-                "en-US"
-              )} × ${Calculator.formatCurrency(smartCameraCost)}`
-          );
+          if (scenario === "A") {
+            animateNumberChange(
+              todayBreakdownLine,
+              previousResults ? previousResults.totalCameras : null,
+              totalCameras,
+              (val) => {
+                const rounded = Math.round(val);
+                return `Cameras: ${rounded.toLocaleString("en-US")}  ${Calculator.formatCurrency(
+                  smartCameraCost
+                )} = ${Calculator.formatCurrency(rounded * smartCameraCost)}`;
+              }
+            );
+          } else if (scenario === "B") {
+            todayBreakdownLine.textContent =
+              "Existing cameras: already installed (no new camera hardware cost modeled here).";
+          } else {
+            todayBreakdownLine.textContent =
+              "No existing cameras (new deployment).";
+          }
         }
 
         if (sighthoundBreakdownNodes) {
@@ -1121,26 +1606,34 @@
             sighthoundBreakdownNodes,
             previousResults ? previousResults.nodesNeeded : null,
             nodesNeeded,
-            (val) =>
-              `Compute Nodes: ${Math.round(val).toLocaleString(
-                "en-US"
-              )} x ${Calculator.formatCurrency(Calculator.NODE_COST)}`
+            (val) => {
+              const rounded = Math.round(val);
+              return `Compute Nodes: ${rounded.toLocaleString("en-US")}  ${Calculator.formatCurrency(
+                Calculator.NODE_COST
+              )} = ${Calculator.formatCurrency(
+                rounded * Calculator.NODE_COST
+              )}`;
+            }
           );
         }
 
         if (sighthoundBreakdownCameras) {
-          if (hasExistingCameras) {
+          if (scenario === "B" || hasExistingCameras) {
             sighthoundBreakdownCameras.textContent =
-              "Cameras: existing standard IP cameras (no new hardware cost)";
+              `Reusing existing cameras: ${Calculator.formatCurrency(0)}`;
           } else {
             animateNumberChange(
               sighthoundBreakdownCameras,
               previousResults ? previousResults.totalCameras : null,
               totalCameras,
-              (val) =>
-                `Cameras: ${Math.round(val).toLocaleString(
+              (val) => {
+                const rounded = Math.round(val);
+                return `Standard IP cameras: ${rounded.toLocaleString(
                   "en-US"
-                )} x ${Calculator.formatCurrency(dumbCameraCost)}`
+                )}  ${Calculator.formatCurrency(
+                  dumbCameraCost
+                )} = ${Calculator.formatCurrency(rounded * dumbCameraCost)}`;
+              }
             );
           }
         }
@@ -1153,27 +1646,34 @@
           (val) => Math.round(val).toLocaleString("en-US")
         );
 
-        animateNumberChange(
-          percentReductionValue,
-          previousResults ? previousResults.percentReduction : null,
-          percentReduction,
-          (val) => Calculator.formatPercent(val)
-        );
-        percentReductionValue.className =
-          "font-medium tabular-nums " +
-          (isSavingsPositiveOrZero ? "text-emerald-600" : "text-rose-600");
+        if (scenario === "A") {
+          if (percentReductionGroup) {
+            percentReductionGroup.classList.remove("hidden");
+          }
+          animateNumberChange(
+            percentReductionValue,
+            previousResults ? previousResults.percentReduction : null,
+            percentReduction,
+            (val) => Calculator.formatPercent(val)
+          );
+          percentReductionValue.className =
+            "font-medium tabular-nums " +
+            (isSavingsPositiveOrZero ? "text-emerald-600" : "text-rose-600");
 
-        percentArrowIcon.className =
-          "inline-flex h-5 w-5 items-center justify-center rounded-full " +
-          (isSavingsPositiveOrZero
-            ? "bg-emerald-50 text-emerald-600"
-            : "bg-rose-50 text-rose-600");
+          percentArrowIcon.className =
+            "inline-flex h-5 w-5 items-center justify-center rounded-full " +
+            (isSavingsPositiveOrZero
+              ? "bg-emerald-50 text-emerald-600"
+              : "bg-rose-50 text-rose-600");
 
-        const percentArrowSvg = percentArrowIcon.querySelector("svg");
-        if (percentArrowSvg) {
-          percentArrowSvg.className =
-            "h-3 w-3 transition-transform duration-150" +
-            (isSavingsPositiveOrZero ? "" : " rotate-180");
+          const percentArrowSvg = percentArrowIcon.querySelector("svg");
+          if (percentArrowSvg) {
+            percentArrowSvg.className =
+              "h-3 w-3 transition-transform duration-150" +
+              (isSavingsPositiveOrZero ? "" : " rotate-180");
+          }
+        } else if (percentReductionGroup) {
+          percentReductionGroup.classList.add("hidden");
         }
 
         animateNumberChange(
@@ -1189,67 +1689,38 @@
           (val) => Calculator.formatCurrency(val)
         );
 
-        // Update optional software comparison lines
-        if (
-          softwareComparison &&
-          softwareCurrentMonthlyLine &&
-          softwareSighthoundMonthlyLine &&
-          softwareDeltaMonthlyLine
-        ) {
-          if (
-            softwareCurrentMonthly !== null &&
-            softwareSighthoundMonthly !== null &&
-            softwareDeltaMonthly !== null
-          ) {
-            softwareComparison.classList.remove("hidden");
-            animateNumberChange(
-              softwareCurrentMonthlyLine,
-              previousResults ? previousResults.softwareCurrentMonthly : null,
-              softwareCurrentMonthly,
-              (val) =>
-                "Your software per month: " +
-                Calculator.formatCurrency(val)
-            );
-            animateNumberChange(
-              softwareSighthoundMonthlyLine,
-              previousResults ? previousResults.softwareSighthoundMonthly : null,
-              softwareSighthoundMonthly,
-              (val) =>
-                "Estimated Sighthound software per month: " +
-                Calculator.formatCurrency(val)
-            );
-            const isSoftwareSavings = softwareDeltaMonthly < 0;
-            const deltaLabelPrefix = isSoftwareSavings
-              ? "Monthly software difference (savings): "
-              : "Monthly software difference (extra cost): ";
-            animateNumberChange(
-              softwareDeltaMonthlyLine,
-              previousResults ? Math.abs(previousResults.softwareDeltaMonthly ?? 0) : null,
-              Math.abs(softwareDeltaMonthly),
-              (val) => deltaLabelPrefix + Calculator.formatCurrency(val)
-            );
-            softwareDeltaMonthlyLine.className =
-              "font-semibold " +
-              (isSoftwareSavings
-                ? "text-emerald-600 dark:text-emerald-400"
-                : "text-rose-600 dark:text-rose-400");
+        // Update software overview lines (Sighthound only, recurring)
+        if (softwareOverview && softwareRecurringSummary) {
+          softwareOverview.classList.remove("hidden");
+          if (effectiveSoftwareTotal > 0) {
+            softwareRecurringSummary.textContent =
+              "Sighthound software: " +
+              Calculator.formatCurrency(effectiveSoftwareTotal) +
+              ` ${softwareFrequencyLabel} for ${totalCameras.toLocaleString(
+                "en-US"
+              )} cameras.`;
           } else {
-            softwareComparison.classList.add("hidden");
+            softwareRecurringSummary.textContent =
+              "Software cost will appear here once cameras are entered.";
           }
         }
 
-        updateCtaLinks({
-          totalCameras,
-          smartCameraCost,
-          dumbCameraCost,
-          nodesNeeded,
-          currentTotal,
-          sighthoundTotal,
-          savings,
-          percentReduction,
-          costPerCameraBefore,
-          costPerCameraAfter,
-        });
+        if (softwareBreakdownLine) {
+          if (softwareMonthlyTotal > 0 && totalCameras > 0) {
+            const perCameraMonthly = softwareMonthlyTotal / totalCameras;
+            softwareBreakdownLine.textContent =
+              `Sighthound software: ${totalCameras.toLocaleString(
+                "en-US"
+              )}  ${Calculator.formatCurrency(
+                perCameraMonthly
+              )} per camera per month = ${Calculator.formatCurrency(
+                softwareMonthlyTotal
+              )} per month.`;
+          } else {
+            softwareBreakdownLine.textContent =
+              "Software costs are calculated per camera per month and shown separately from hardware.";
+          }
+        }
       }
 
       function initFromQueryParams() {
@@ -1275,16 +1746,24 @@
       initFromQueryParams();
       updateResults();
 
-      [
+      const inputElements = [
         totalCamerasInput,
         smartCameraCostInput,
         dumbCameraCostInput,
-        currentSoftwareCostPerCameraInput,
-      ].forEach((input) => {
+        softwareBillingFrequencySelect,
+      ];
+
+      inputElements.forEach((input) => {
         if (!input) return;
         input.addEventListener("input", updateResults);
         input.addEventListener("change", updateResults);
       });
+
+      if (softwareSelectionInputs && softwareSelectionInputs.length) {
+        softwareSelectionInputs.forEach((input) => {
+          input.addEventListener("change", updateResults);
+        });
+      }
     </script>
   </body>
 </html>

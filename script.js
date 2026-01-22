@@ -2,7 +2,10 @@ const CAMERAS_PER_NODE = 4;
 const NODE_COST = 3500;
 const DEFAULT_SMART_CAMERA_COST = 3000;
 const DEFAULT_DUMB_CAMERA_COST = 250;
-const SIGHTHOUND_SOFTWARE_COST_PER_CAMERA = 30; // USD per camera per month
+// Sighthound software pricing (per camera, per month)
+// Single service: either LPR or MMCG at the same price point.
+const SIGHTHOUND_SOFTWARE_COST_PER_CAMERA = 30; // single service (LPR or MMCG)
+const SIGHTHOUND_SOFTWARE_COST_BOTH_SERVICES = 55; // both LPR + MMCG
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -49,6 +52,16 @@ function calculateSighthoundTotal(totalCameras, dumbCameraCost) {
 
 function calculateSavings(currentTotal, sighthoundTotal) {
   return currentTotal - sighthoundTotal;
+}
+
+// Given a software selection key, return the monthly per-camera price.
+// selection: 'lpr', 'mmcg', 'both'. Any unknown value falls back to single-service pricing.
+function getSoftwareMonthlyPricePerCamera(selection) {
+  if (selection === 'both') {
+    return SIGHTHOUND_SOFTWARE_COST_BOTH_SERVICES;
+  }
+  // Treat anything else (including undefined) as a single service.
+  return SIGHTHOUND_SOFTWARE_COST_PER_CAMERA;
 }
 
 // Core validation logic extracted for unit testing.
@@ -148,6 +161,7 @@ if (typeof window !== 'undefined') {
     DEFAULT_SMART_CAMERA_COST,
     DEFAULT_DUMB_CAMERA_COST,
     SIGHTHOUND_SOFTWARE_COST_PER_CAMERA,
+    SIGHTHOUND_SOFTWARE_COST_BOTH_SERVICES,
     formatCurrency,
     formatPercent,
     parseNumberValue,
@@ -155,6 +169,7 @@ if (typeof window !== 'undefined') {
     calculateCurrentTotal,
     calculateSighthoundTotal,
     calculateSavings,
+    getSoftwareMonthlyPricePerCamera,
     validateInputs,
     computeTotalsFromRaw,
   };
@@ -168,6 +183,7 @@ if (typeof module !== 'undefined' && module.exports) {
     DEFAULT_SMART_CAMERA_COST,
     DEFAULT_DUMB_CAMERA_COST,
     SIGHTHOUND_SOFTWARE_COST_PER_CAMERA,
+    SIGHTHOUND_SOFTWARE_COST_BOTH_SERVICES,
     formatCurrency,
     formatPercent,
     parseNumberValue,
@@ -175,6 +191,7 @@ if (typeof module !== 'undefined' && module.exports) {
     calculateCurrentTotal,
     calculateSighthoundTotal,
     calculateSavings,
+    getSoftwareMonthlyPricePerCamera,
     validateInputs,
     computeTotalsFromRaw,
   };

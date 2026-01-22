@@ -8,10 +8,13 @@ const {
   NODE_COST,
   DEFAULT_SMART_CAMERA_COST,
   DEFAULT_DUMB_CAMERA_COST,
+  SIGHTHOUND_SOFTWARE_COST_PER_CAMERA,
+  SIGHTHOUND_SOFTWARE_COST_BOTH_SERVICES,
   calculateNodesNeeded,
   calculateCurrentTotal,
   calculateSighthoundTotal,
   calculateSavings,
+  getSoftwareMonthlyPricePerCamera,
   validateInputs,
   computeTotalsFromRaw,
 } = calculator;
@@ -44,6 +47,17 @@ test('calculateSighthoundTotal uses nodes, node cost, and dumb camera cost', () 
 
   const expected = nodesNeeded * NODE_COST + totalCameras * dumbCameraCost;
   assert.equal(calculateSighthoundTotal(totalCameras, dumbCameraCost), expected);
+});
+
+// 3b. Software pricing helper chooses correct per-camera price
+
+test('getSoftwareMonthlyPricePerCamera returns correct pricing for each selection', () => {
+  assert.equal(getSoftwareMonthlyPricePerCamera('lpr'), SIGHTHOUND_SOFTWARE_COST_PER_CAMERA);
+  assert.equal(getSoftwareMonthlyPricePerCamera('mmcg'), SIGHTHOUND_SOFTWARE_COST_PER_CAMERA);
+  assert.equal(getSoftwareMonthlyPricePerCamera('both'), SIGHTHOUND_SOFTWARE_COST_BOTH_SERVICES);
+  // Fallback to single-service pricing for unknown/undefined selections
+  assert.equal(getSoftwareMonthlyPricePerCamera('unknown'), SIGHTHOUND_SOFTWARE_COST_PER_CAMERA);
+  assert.equal(getSoftwareMonthlyPricePerCamera(undefined), SIGHTHOUND_SOFTWARE_COST_PER_CAMERA);
 });
 
 // 4. Calculator computes savings correctly as the difference between current total and Sighthound total
