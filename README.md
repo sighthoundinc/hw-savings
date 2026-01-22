@@ -396,6 +396,17 @@ Squarespace embed example:
 - If you change the GitHub Pages settings or repository name, update the `src` URL to match.
 ## 11) Changelog
 
+For a complete history of changes, see `CHANGELOG.md`.
+
+- **2026-01-22**
+  - Added visual emphasis to the Scenario A savings card using green/red styling while keeping underlying math unchanged.
+  - Introduced smooth fade transitions when switching between smart/standard/new deployment scenarios so content no longer snaps.
+  - Implemented value-change highlighting on key result cards (cost comparison, deployment details, software summary, savings) so changes caused by each input are immediately visible.
+  - Kept the standard IP camera cost input always visible across scenarios, while still reusing existing cameras in Scenario B math.
+  - Improved print/PDF behavior: stacked results above inputs, added a page break before **Your setup**, and adjusted spacing for more compact export.
+  - Ensured hardware and software breakdown lines clearly show quantity × unit price (e.g., `Compute Nodes: 3 x $3,500.00 = $10,500.00`).
+  - Added a Sighthound logo to the export header above the results section for branded PDF output.
+
 - **2026-01-13**
   - Clarified the top-of-page hero copy to explain the calculator in one sentence.
   - Added a compact "Step 1 / Step 2" strip under *How this works* and a note that results update instantly.

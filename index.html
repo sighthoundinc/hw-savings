@@ -85,12 +85,25 @@
           padding: 0 !important;
         }
 
-        /* Force two-column layout and tighter gaps for main grid */
+        /* Stack inputs/results vertically for PDF export */
         #layoutGrid {
-          grid-template-columns: 1.05fr 1.05fr !important;
-          column-gap: 0.5rem !important;
-          row-gap: 0.5rem !important;
-          align-items: flex-start !important;
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 0.5rem !important;
+          align-items: stretch !important;
+        }
+
+        /* Print: show results above inputs */
+        #layoutGrid > section:first-of-type {
+          /* Inputs column ("Your setup") */
+          order: 2;
+          page-break-before: always;
+          break-before: page;
+        }
+
+        #layoutGrid > section:last-of-type {
+          /* Results column ("Your hardware costs" etc.) */
+          order: 1;
         }
 
         /* Compact cards and sections */
@@ -555,14 +568,21 @@
 
             <!-- Results column -->
             <section class="space-y-4">
-              <!-- Print-only header for PDF/Print view -->
-              <div class="print-only mb-4">
-                <h1 class="text-xl font-semibold text-slate-900">
-                  Hardware savings estimate
-                </h1>
-                <p class="mt-1 text-xs text-slate-500">
-                  Generated with the Sighthound hardware savings calculator.
-                </p>
+              <!-- Header shown above results (also used in print/PDF) -->
+              <div class="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <h1 class="text-xl font-semibold text-slate-900">
+                    Hardware savings estimate
+                  </h1>
+                  <p class="mt-1 text-xs text-slate-500">
+                    Generated with the Sighthound hardware savings calculator.
+                  </p>
+                </div>
+                <img
+                  src="assets/sighthound-logo-black.png"
+                  alt="Sighthound logo"
+                  class="h-5"
+                />
               </div>
               <!-- Placeholder state -->
               <div
@@ -575,7 +595,7 @@
               </div>
 
               <!-- Results -->
-              <div id="resultsPanel" class="hidden space-y-4">
+              <div id="resultsPanel" class="hidden">
                 <!-- Cost comparison -->
                 <div
                   id="costComparisonCard"
@@ -665,8 +685,11 @@
                         id="softwareBreakdown"
                         class="sm:col-span-2 border-t border-slate-200 pt-2 mt-2 dark:border-slate-700"
                       >
-                        <p class="font-medium text-slate-700 dark:text-slate-200">
-                          Software (recurring)
+                        <p
+                          id="softwareBreakdownHeading"
+                          class="font-medium text-slate-700 dark:text-slate-200"
+                        >
+                          Your software costs (recurring)
                         </p>
                         <p
                           id="softwareBreakdownLine"
@@ -682,7 +705,7 @@
                 <!-- Savings card -->
                 <div
                   id="primaryCard"
-                  class="rounded-xl shadow-sm border border-slate-200 bg-gradient-to-br from-sky-50/80 via-slate-50 to-emerald-50/80 p-5 sm:p-6 flex flex-col gap-3 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900"
+                  class="mt-4 rounded-xl shadow-sm border border-slate-200 bg-gradient-to-br from-sky-50/80 via-slate-50 to-emerald-50/80 p-5 sm:p-6 flex flex-col gap-3 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900"
                 >
                   <div class="flex items-start justify-between gap-4">
                     <div>
@@ -749,7 +772,7 @@
                 <!-- Secondary metrics -->
                 <div
                   id="deploymentDetailsCard"
-                  class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 sm:p-6 space-y-4 dark:bg-slate-900 dark:border-slate-700"
+                  class="mt-4 bg-white rounded-xl shadow-sm border border-slate-200 p-5 sm:p-6 space-y-4 dark:bg-slate-900 dark:border-slate-700"
                 >
                   <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-50">
                     Deployment details
@@ -875,8 +898,11 @@
                     id="softwareOverview"
                     class="mt-4 border-t border-slate-200 pt-4 space-y-1 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400"
                   >
-                    <p class="font-semibold text-slate-700 dark:text-slate-200">
-                      Sighthound software (recurring)
+                    <p
+                      id="softwareOverviewHeading"
+                      class="font-semibold text-slate-700 dark:text-slate-200"
+                    >
+                      Your software costs (recurring)
                     </p>
                     <p id="softwareRecurringSummary">
                       Software cost will appear here once cameras are entered.
@@ -889,7 +915,7 @@
 
                 <!-- CTA -->
                 <aside
-                  class="rounded-xl shadow-sm border border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100/80 p-5 sm:p-6 flex flex-col gap-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-900 no-print"
+                  class="mt-4 rounded-xl shadow-sm border border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100/80 p-5 sm:p-6 flex flex-col gap-3 dark:border-slate-700 dark:from-slate-900 dark:to-slate-900 no-print"
                 >
                   <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-50">
                     Export and next steps
@@ -1039,6 +1065,9 @@
         "costPerCameraAfterValue"
       );
       const softwareOverview = document.getElementById("softwareOverview");
+      const softwareOverviewHeading = document.getElementById(
+        "softwareOverviewHeading"
+      );
       const softwareRecurringSummary = document.getElementById(
         "softwareRecurringSummary"
       );
@@ -1049,6 +1078,9 @@
       );
       const softwareBreakdownLine = document.getElementById(
         "softwareBreakdownLine"
+      );
+      const softwareBreakdownHeading = document.getElementById(
+        "softwareBreakdownHeading"
       );
       const costComparisonCard = document.getElementById("costComparisonCard");
       const deploymentDetailsCard = document.getElementById(
@@ -1425,14 +1457,12 @@
         const scenarioBNote = document.getElementById("scenarioBNote");
 
         if (standardIpCameraCostGroup) {
-          const shouldShowStandardCost = scenario === "A" || scenario === "C";
-          toggleWithFade(standardIpCameraCostGroup, shouldShowStandardCost);
-          if (shouldShowStandardCost) {
-            standardIpCameraCostGroup.classList.remove(
-              "opacity-60",
-              "pointer-events-none"
-            );
-          }
+          // Always allow entering an estimated standard IP camera cost, regardless of scenario.
+          toggleWithFade(standardIpCameraCostGroup, true);
+          standardIpCameraCostGroup.classList.remove(
+            "opacity-60",
+            "pointer-events-none"
+          );
         }
 
         if (scenarioBNote) {
@@ -1495,6 +1525,7 @@
         let softwareYearlyTotal = 0;
         let effectiveSoftwareTotal = 0;
         let softwareFrequencyLabel = "per month";
+        let softwareFrequencyUiLabel = "monthly";
 
         if (totalCameras > 0 && softwareSelectionInputs) {
           let selected = "both";
@@ -1513,9 +1544,11 @@
           if (billingFrequency === "yearly") {
             effectiveSoftwareTotal = softwareYearlyTotal;
             softwareFrequencyLabel = "per year";
+            softwareFrequencyUiLabel = "annual (estimated)";
           } else {
             effectiveSoftwareTotal = softwareMonthlyTotal;
             softwareFrequencyLabel = "per month";
+            softwareFrequencyUiLabel = "monthly";
           }
         }
 
@@ -1535,7 +1568,6 @@
           softwareYearlyTotal,
           effectiveSoftwareTotal,
           scenario,
-          isSavingsPositiveOrZero,
         };
 
         // Toggle panels
@@ -1550,6 +1582,8 @@
         // Scenario-specific primary card and savings logic (Scenario A only)
         if (scenario === "A") {
           if (primaryCard) {
+            // Ensure the card participates in layout when Scenario A is active.
+            primaryCard.style.display = "";
             toggleWithFade(primaryCard, true);
           }
 
@@ -1614,7 +1648,10 @@
             "h-4 w-4 transition-transform duration-150" +
             (isSavingsPositiveOrZero ? "" : " rotate-180");
         } else if (primaryCard) {
-          toggleWithFade(primaryCard, false);
+          // In non-Scenario-A views, remove the savings card from layout entirely
+          // so there is no extra whitespace between cost comparison and deployment details.
+          primaryCard.classList.add("hidden");
+          primaryCard.style.display = "none";
         }
 
         // Cost comparison block (scenario-specific)
@@ -1677,7 +1714,7 @@
               totalCameras,
               (val) => {
                 const rounded = Math.round(val);
-                return `Cameras: ${rounded.toLocaleString("en-US")}  ${Calculator.formatCurrency(
+                return `Cameras: ${rounded.toLocaleString("en-US")} x ${Calculator.formatCurrency(
                   smartCameraCost
                 )} = ${Calculator.formatCurrency(rounded * smartCameraCost)}`;
               }
@@ -1698,7 +1735,7 @@
             nodesNeeded,
             (val) => {
               const rounded = Math.round(val);
-              return `Compute Nodes: ${rounded.toLocaleString("en-US")}  ${Calculator.formatCurrency(
+              return `Compute Nodes: ${rounded.toLocaleString("en-US")} x ${Calculator.formatCurrency(
                 Calculator.NODE_COST
               )} = ${Calculator.formatCurrency(
                 rounded * Calculator.NODE_COST
@@ -1720,7 +1757,7 @@
                 const rounded = Math.round(val);
                 return `Standard IP cameras: ${rounded.toLocaleString(
                   "en-US"
-                )}  ${Calculator.formatCurrency(
+                )} x ${Calculator.formatCurrency(
                   dumbCameraCost
                 )} = ${Calculator.formatCurrency(rounded * dumbCameraCost)}`;
               }
@@ -1781,9 +1818,13 @@
         // Update software overview lines (Sighthound only, recurring)
         if (softwareOverview && softwareRecurringSummary) {
           softwareOverview.classList.remove("hidden");
+          if (softwareOverviewHeading) {
+            softwareOverviewHeading.textContent =
+              `Your software costs (recurring  ${softwareFrequencyUiLabel})`;
+          }
           if (effectiveSoftwareTotal > 0) {
             softwareRecurringSummary.textContent =
-              "Sighthound software: " +
+              "Your software costs: " +
               Calculator.formatCurrency(effectiveSoftwareTotal) +
               ` ${softwareFrequencyLabel} for ${totalCameras.toLocaleString(
                 "en-US"
@@ -1796,18 +1837,34 @@
 
         if (softwareBreakdownLine) {
           if (softwareMonthlyTotal > 0 && totalCameras > 0) {
-            const perCameraMonthly = softwareMonthlyTotal / totalCameras;
-            softwareBreakdownLine.textContent =
-              `Sighthound software: ${totalCameras.toLocaleString(
-                "en-US"
-              )}  ${Calculator.formatCurrency(
-                perCameraMonthly
-              )} per camera per month = ${Calculator.formatCurrency(
-                softwareMonthlyTotal
-              )} per month.`;
+            const billingFrequency = softwareBillingFrequencySelect
+              ? softwareBillingFrequencySelect.value
+              : "monthly";
+
+            if (billingFrequency === "yearly") {
+              const perCameraYearly = softwareYearlyTotal / totalCameras;
+              softwareBreakdownLine.textContent =
+                `Your software costs: ${totalCameras.toLocaleString(
+                  "en-US"
+                )} x ${Calculator.formatCurrency(
+                  perCameraYearly
+                )} per camera per year = ${Calculator.formatCurrency(
+                  softwareYearlyTotal
+                )} per year.`;
+            } else {
+              const perCameraMonthly = softwareMonthlyTotal / totalCameras;
+              softwareBreakdownLine.textContent =
+                `Your software costs: ${totalCameras.toLocaleString(
+                  "en-US"
+                )} x ${Calculator.formatCurrency(
+                  perCameraMonthly
+                )} per camera per month = ${Calculator.formatCurrency(
+                  softwareMonthlyTotal
+                )} per month.`;
+            }
           } else {
             softwareBreakdownLine.textContent =
-              "Software costs are calculated per camera per month and shown separately from hardware.";
+              "Your software costs are calculated per camera per month and shown separately from hardware.";
           }
         }
       }
