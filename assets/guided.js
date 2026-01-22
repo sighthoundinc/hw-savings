@@ -21,6 +21,7 @@
   var stepEls = Array.prototype.slice.call(form.querySelectorAll('section[data-step]'));
   var totalSteps = stepEls.length;
   var currentStepIndex = 0;
+  var hasShownResults = false;
 
   var stepIndicatorEl = document.getElementById('guidedStepIndicator');
   var progressBarEl = document.getElementById('guidedProgress');
@@ -75,11 +76,26 @@
 
   var downloadPdfBtn = document.getElementById('guidedDownloadPdf');
   var editInputsBtn = document.getElementById('guidedEditInputs');
+  var startOverBtn = document.getElementById('guidedStartOver');
 
   function clampStepIndex(index) {
     if (index < 0) return 0;
     if (index >= totalSteps) return totalSteps - 1;
     return index;
+  }
+
+  function hideResults() {
+    if (resultsBodyEl) resultsBodyEl.classList.add('hidden');
+    if (resultsPlaceholderEl) resultsPlaceholderEl.classList.remove('hidden');
+  }
+
+  function markResultsStale() {
+    if (!hasShownResults) return;
+    hasShownResults = false;
+    hideResults();
+    if (resultsStatusEl) {
+      resultsStatusEl.textContent = 'Answer the next questions to generate your estimate.';
+    }
   }
 
   function updateStepUi() {
@@ -230,6 +246,9 @@
   }
 
   function handleInputChange() {
+    // Any answer change makes the previous estimate stale and hides results
+    markResultsStale();
+
     var partial = {};
     applyScenarioToParamsFromForm(partial);
 
@@ -259,6 +278,8 @@
   }
 
   function setBilling(billing) {
+    // Changing billing is part of editing answers; hide existing results.
+    markResultsStale();
     var normalized = billing === 'yearly' ? 'yearly' : 'monthly';
     state.update({ billing: normalized });
   }
@@ -270,9 +291,20 @@
     var cameras = p.cameras || 0;
     var hasValidCameras = cameras >= 1;
 
+    // Guided mode: do not show live results while the user is still answering steps.
+    if (!hasShownResults) {
+      if (resultsStatusEl) {
+        resultsStatusEl.textContent = 'Answer the next questions to generate your estimate.';
+      }
+      if (resultsPlaceholderEl) resultsPlaceholderEl.classList.remove('hidden');
+      if (resultsBodyEl) resultsBodyEl.classList.add('hidden');
+      return;
+    }
+
+    // Once results have been shown, require at least one camera to render them.
     if (!hasValidCameras) {
       if (resultsStatusEl) {
-        resultsStatusEl.textContent = 'Start by selecting a scenario and camera count.';
+        resultsStatusEl.textContent = 'Enter at least one camera to generate your estimate.';
       }
       if (resultsPlaceholderEl) resultsPlaceholderEl.classList.remove('hidden');
       if (resultsBodyEl) resultsBodyEl.classList.add('hidden');
@@ -285,7 +317,7 @@
     var breakdown = result.breakdown;
 
     if (resultsStatusEl) {
-      resultsStatusEl.textContent = 'Estimate updated. Adjust inputs at any time to refine.';
+      resultsStatusEl.textContent = 'Estimate updated. Adjust inputs and click Show estimate to recalculate.';
     }
     if (resultsPlaceholderEl) resultsPlaceholderEl.classList.add('hidden');
     if (resultsBodyEl) resultsBodyEl.classList.remove('hidden');
@@ -406,6 +438,8 @@
       var params = state.getParams();
       var next = params.expandBreakdown ? 0 : 1;
       state.update({ expandBreakdown: next });
+      // Keep local UI in sync; does not recompute results unless they have already been shown.
+      render(state.getParams());
     });
   }
 
@@ -421,23 +455,61 @@
     });
   }
 
+  function showEstimate() {
+    // Validation: require a scenario selection.
+    var scenarioResolved =
+      (scenarioSmart && scenarioSmart.checked) ||
+      (scenarioExistingIp && scenarioExistingIp.checked) ||
+      (scenarioNew && scenarioNew.checked);
+    if (!scenarioResolved) {
+      if (resultsStatusEl) {
+        resultsStatusEl.textContent = 'Choose a deployment profile in Step 1 to continue.';
+      }
+      goToStep(0);
+      if (scenarioSmart && typeof scenarioSmart.focus === 'function') {
+        try { scenarioSmart.focus({ preventScroll: true }); } catch (_e) { scenarioSmart.focus(); }
+      }
+      return;
+    }
+
+    // Basic validation: require at least one camera.
+    var paramsBefore = state.getParams();
+    var cams = paramsBefore.cameras || 0;
+    if (!cams || cams < 1) {
+      if (resultsStatusEl) {
+        resultsStatusEl.textContent = 'Enter at least one camera to generate your estimate.';
+      }
+      // Jump to the cameras step to help the user correct input.
+      goToStep(1);
+      if (camerasInput && typeof camerasInput.focus === 'function') {
+        try { camerasInput.focus({ preventScroll: true }); } catch (_e) { camerasInput.focus(); }
+      }
+      return;
+    }
+
+    // Persist any pending inputs into canonical state.
+    handleInputChange();
+    hasShownResults = true;
+
+    var params = state.getParams();
+    render(params);
+    goToStep(totalSteps - 1);
+
+    if (resultsBodyEl) {
+      resultsBodyEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   if (seeResultsBtn) {
     seeResultsBtn.addEventListener('click', function () {
-      // Ensure latest inputs are captured before rendering results.
-      handleInputChange();
-      goToStep(totalSteps - 1);
-      // Scroll results into view for keyboard/desktop users.
-      if (resultsBodyEl) {
-        resultsBodyEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      showEstimate();
     });
   }
 
   if (form) {
     form.addEventListener('submit', function (event) {
       event.preventDefault();
-      handleInputChange();
-      goToStep(totalSteps - 1);
+      showEstimate();
     });
   }
 
@@ -446,6 +518,11 @@
       var params = state.getParams();
       if (!params.expandBreakdown) {
         state.update({ expandBreakdown: 1 });
+        params = state.getParams();
+      }
+      if (hasShownResults) {
+        // Ensure breakdown visibility is reflected before printing.
+        render(params);
       }
       window.print();
     });
@@ -453,6 +530,8 @@
 
   if (editInputsBtn) {
     editInputsBtn.addEventListener('click', function () {
+      // Editing answers returns to the wizard and hides results until recalculated.
+      markResultsStale();
       goToStep(0);
       if (form) {
         form.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -460,7 +539,37 @@
     });
   }
 
-  state.subscribe(render);
-  render(state.getParams());
+  if (startOverBtn) {
+    startOverBtn.addEventListener('click', function () {
+      var base = Params.DEFAULTS || {};
+      hasShownResults = false;
+      hideResults();
+      if (resultsStatusEl) {
+        resultsStatusEl.textContent = 'Start by selecting a scenario and camera count.';
+      }
+      state.update({
+        cameras: base.cameras || 0,
+        hasExistingCameras: base.hasExistingCameras || 0,
+        hasSmartCameras: base.hasSmartCameras || 0,
+        smartCost: base.smartCost || 3000,
+        ipCost: base.ipCost || 250,
+        software: base.software || 'both',
+        billing: base.billing || 'monthly',
+        expandBreakdown: base.expandBreakdown || 0,
+        showAssumptions: base.showAssumptions || 0,
+      });
+      var p = state.getParams();
+      hydrateFromParams(p);
+      goToStep(0);
+      updateStepUi();
+      if (form) {
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  }
+
+  var initialParams = state.getParams();
+  hydrateFromParams(initialParams);
   updateStepUi();
+  // Initial view: wizard only; results appear after the user clicks "Show estimate".
 })();

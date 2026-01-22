@@ -160,7 +160,7 @@
             </div>
           </section>
 
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
+          <div class="max-w-3xl mx-auto space-y-6 lg:space-y-8">
             <!-- Guided wizard -->
             <section
               class="bg-slate-50 rounded-xl shadow-md border border-slate-200/80 p-5 sm:p-6"
@@ -477,14 +477,14 @@
                       id="guidedSeeResults"
                       class="hidden inline-flex items-center justify-center rounded-lg bg-sky-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-sky-700"
                     >
-                      Update results
+                      Show estimate
                     </button>
                   </div>
                 </footer>
               </form>
             </section>
 
-            <!-- Results -->
+            <!-- Results (single-column, appears after Show estimate) -->
             <section
               id="guidedResultsCard"
               class="rounded-xl border border-slate-200 bg-white p-5 sm:p-6 shadow-md"
@@ -693,18 +693,25 @@
                 >
                   <div class="flex flex-wrap items-center gap-2">
                     <button
-                      id="guidedDownloadPdf"
+                      id="guidedStartOver"
                       type="button"
-                      class="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                      class="inline-flex items-center justify-center rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-slate-800"
                     >
-                      Download estimate as PDF
+                      Start over
                     </button>
                     <button
                       id="guidedEditInputs"
                       type="button"
                       class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
                     >
-                      Edit inputs
+                      Edit answers
+                    </button>
+                    <button
+                      id="guidedDownloadPdf"
+                      type="button"
+                      class="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                    >
+                      Download estimate as PDF
                     </button>
                   </div>
                   <p class="text-[11px] text-slate-500">
