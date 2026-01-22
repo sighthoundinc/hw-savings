@@ -1,0 +1,256 @@
+# Dual-mode savings estimator plan
+## Objectives
+- Host both "Guided estimate" and "Live comparison" from a single static GitHub Pages site.
+- Consolidate all math, pricing, and constants into a single source of truth so both modes always agree.
+- Use URL parameters to represent full calculator state for deep-linking and lossless switching between modes.
+- Keep UI/branding consistent (Tailwind CDN, shared header, logo, typography, spacing, card patterns).
+- Preserve existing behavior: scenarios A/B/C, software pricing/billing options, progressive disclosure, and PDF export.
+## A) Proposed repo structure
+- `/index.html`
+  - Entry point for "Guided estimate" (default experience for public visitors).
+  - Includes shared header, logo, navigation, and a prominent toggle/link to "Live comparison".
+  - Loads Tailwind via CDN and shared JS bundles.
+- `/live.html`
+  - Entry point for "Live comparison" (sales/demo friendly).
+  - Two-column, one-screen layout preserved; minimal scrolling.
+  - Same header/logo and mode toggle as `index.html`.
+- `/assets/`
+  - `/assets/calc-core.js`
+    - Pure, framework-free module with all math and canonical constants.
+    - Exposes functions like:
+      - `computeHardwareSummary(params)`
+      - `computeScenarioResults(params)` (supports A/B/C)
+      - `computeSoftwarePricing(params)`
+    - Encapsulates fixed constants, e.g. `CAMERAS_PER_NODE = 4`, `NODE_COST = 3500`, and software prices.
+    - No DOM access; purely functional and unit-testable.
+  - `/assets/params-schema.js`
+    - Defines the canonical URL parameter schema and validation/defaulting helpers.
+    - Exposes helpers such as `readParamsFromUrl(location.search)`, `normalizeParams(raw)`, and `buildSearchFromParams(params)`.
+  - `/assets/state-sync.js`
+    - Small layer on top of `params-schema.js` that:
+      - Syncs URL params ↔ in-memory `params` object.
+      - Applies debounced `history.replaceState` on input changes so URLs stay shareable.
+      - Provides a single `onParamsChange(callback)` contract for both modes.
+  - `/assets/ui-shared.js`
+    - Shared UI utilities: header rendering (if needed), progressive disclosure toggling, currency formatting, number formatting, and negative-savings styling rules.
+    - Contains any common DOM selectors/behaviors used by both `guided.js` and `live.js` (e.g. attaching click handlers to mode-switch controls, collapse/expand panels).
+  - `/assets/pdf-export.js`
+    - Single implementation of print/PDF behavior used by both pages.
+    - Responsible for:
+      - Ensuring summary sections and assumptions are visible/expanded for print.
+      - Applying print-specific CSS classes.
+      - Triggering `window.print()`.
+  - `/assets/guided.js`
+    - Guided UI wiring only; imports/uses `calc-core.js`, `state-sync.js`, `ui-shared.js`, and `pdf-export.js`.
+    - Manages wizard/cards flow and progress bar.
+    - Reads initial params from URL, populates cards/inputs, subscribes to changes.
+  - `/assets/live.js`
+    - Live comparison UI wiring only; imports/uses the same shared modules.
+    - Preserves two-column layout and immediate, visible recalculation on input changes.
+  - `/assets/styles.css` (optional)
+    - Small layer of custom CSS and Tailwind utility composition (if needed) to ensure consistent typography and spacing between modes, and print styles for PDF.
+- `/docs/` and `/history/`
+  - `/docs/` for any future documentation (per project rules).
+  - `/history/` to store archived plans and change notes.
+## B) Canonical URL param schema
+- General principles
+  - All state that affects math or visible outputs must be representable as URL params.
+  - Params are stable and mode-agnostic; `guided` and `live` are just different views over the same canonical model.
+  - Booleans are encoded as `0`/`1`; enums as short lowercase strings; numbers as plain decimal strings.
+  - Unknown/invalid values fall back to safe defaults via `normalizeParams`.
+- Core/common params
+  - `mode`
+    - Values: `guided` | `live`.
+    - Default: `guided` when missing.
+    - Used by links and embeds to set initial view but should not affect math.
+  - `cameras`
+    - Meaning: total number of relevant camera streams for the scenario.
+    - Type: integer `>= 0`.
+    - Default: `0` (UI may display a suggested default like `50`).
+  - `scenario`
+    - Meaning: high-level deployment scenario.
+    - Values (canonical):
+      - `a` = scenario A (smart cameras today vs current baseline).
+      - `b` = scenario B (existing standard IP deployment).
+      - `c` = scenario C (new deployment).
+    - Default: `a`.
+- Existing deployment flags
+  - `hasExistingCameras`
+    - Values: `0` or `1`.
+    - Default: `1` for scenarios `a` and `b`, `0` for `c`.
+  - `hasSmartCameras`
+    - Values: `0` or `1`.
+    - Default: `1` for scenario `a`, `0` otherwise unless explicitly set.
+  - `smartShare`
+    - Meaning: fraction or % of cameras that are smart cameras in mixed fleets.
+    - Type: integer `0–100` (percentage of `cameras`).
+    - Default: `100` for `scenario=a`, `0` otherwise.
+- Hardware cost parameters
+  - `smartCost`
+    - Meaning: per-camera cost (or uplift) for smart cameras in the comparison.
+    - Type: number `>= 0`.
+    - Default: canonical value from `calc-core` when omitted.
+  - `ipCost`
+    - Meaning: per-camera cost for standard IP cameras.
+    - Type: number `>= 0`.
+    - Default: canonical value from `calc-core` when omitted.
+  - `currency`
+    - Values: `usd` (future-proof for additional currencies).
+    - Default: `usd`.
+- Software configuration
+  - `software`
+    - Meaning: selected software package.
+    - Values: `none` | `lpr` | `mmcg` | `both`.
+    - Default: `both` (or product decision; can be changed centrally).
+    - Software pricing per stream per month remains constants in `calc-core`:
+      - `LPR = 30`, `MMCG = 30`, `BOTH = 55`.
+  - `billing`
+    - Meaning: software billing view.
+    - Values: `monthly` | `yearly`.
+    - Default: `monthly`.
+    - `yearly` view simply multiplies by `12` for display; does not change underlying monthly pricing.
+- Presentation/UX params (optional but useful)
+  - `expandBreakdown`
+    - Values: `0` | `1`.
+    - Controls whether cost breakdown sections start expanded on page load.
+  - `showAssumptions`
+    - Values: `0` | `1`.
+    - Controls whether the assumptions/definitions panel is visible by default.
+- Example URL (illustrative only)
+  - `?mode=live&scenario=b&cameras=80&hasExistingCameras=1&hasSmartCameras=0&smartShare=0&smartCost=500&ipCost=300&software=both&billing=yearly`
+## C) Switching mechanism
+- Mode switch UI
+  - Shared pattern in header for both `index.html` and `live.html`:
+    - Two-option toggle labeled exactly:
+      - `Guided estimate`
+      - `Live comparison`
+    - The active mode appears highlighted; the inactive one looks like a secondary button/link.
+- Navigation behavior
+  - On click of the inactive mode:
+    - Read current params via `readParamsFromUrl(location.search)`.
+    - Update `mode` param to the target mode.
+    - Compute the new URL via `buildSearchFromParams(params)`.
+    - Navigate to the other page:
+      - From guided to live: `/live.html?{search}`.
+      - From live to guided: `/index.html?{search}`.
+  - No history reset of core values; all input-derived params are passed through.
+- Initial load behavior
+  - Both pages:
+    - Parse URL params into a canonical `params` object via `normalizeParams`.
+    - Initialize all inputs, toggles, and scenario controls from `params`.
+    - Subscribe to UI events so that any change updates `params` and `history.replaceState`.
+  - This guarantees that switching modes always retains the latest state and that copying the URL at any time shares a full snapshot.
+- Embedding considerations
+  - If either mode is embedded in an iframe, mode switching continues to work (navigating within the iframe).
+  - The `mode` param is preserved mainly for clarity and analytics; the physical page (`index.html` vs `live.html`) still controls layout.
+## D) Migration/merge strategy
+- 1) Normalize and extract math from current Live comparison (existing repo)
+  - Identify all hardware and software calculation logic in current `hw-savings` implementation.
+  - Move math and constants into `assets/calc-core.js` as pure functions.
+  - Adjust existing Live UI code to import and use these functions, eliminating any inline math.
+  - Add a thin adapter layer if current variable names/structures differ from the new canonical `params` schema.
+- 2) Introduce URL param schema and state helpers
+  - Implement `params-schema.js` and `state-sync.js` based on section B.
+  - Update current Live mode inputs to read and write via these helpers.
+  - Verify that reloading the page preserves state and that URLs are shareable.
+- 3) Align Live comparison UI with shared assets
+  - Extract shared UI utilities (header, formatting, negative-savings styling, toggles) into `ui-shared.js` and optional `styles.css`.
+  - Introduce the mode switch in `live.html`, pointing to `index.html` (even before Guided UI is fully integrated) for progressive rollout.
+- 4) Import Julianna’s Guided estimator into the repo
+  - Add `index.html` (Guided) and its JS/CSS assets under `/assets/`, renaming as needed to fit the structure (`guided.js`, `styles.css` etc.).
+  - Remove or isolate any math logic currently embedded in the Guided project.
+  - Wire Guided inputs and steps to use the canonical `params` object and `calc-core` functions:
+    - Map existing Guided field names to canonical params (via a small mapping/adaptation layer if necessary).
+- 5) Resolve conflicts and duplicate utilities
+  - For overlapping functions (e.g. formatting, simple math helpers):
+    - Prefer keeping them once in `ui-shared.js` or `calc-core.js` depending on domain (UI vs math).
+    - Remove duplicated implementations from both original projects.
+  - For diverging numbers or formulas:
+    - Treat existing `hw-savings` math as authoritative unless product explicitly decides otherwise.
+    - Update the Guided estimator to match `calc-core` behavior.
+- 6) Unify PDF export
+  - Consolidate any print/PDF logic from both projects into `pdf-export.js` and shared print styles.
+  - Ensure both modes call the same `exportToPdf(params, results)` function (or similar) that relies on `calc-core` outputs.
+- 7) Clean-up and documentation
+  - Remove any dead files or unused constants.
+  - Add a short `docs/architecture.md` describing modes, shared modules, and the param schema for future contributors.
+## E) Risks and mitigations
+- Risk: Math divergence between modes
+  - Cause: Guided estimator ships with slightly different formulas or constants than existing Live tool.
+  - Mitigation:
+    - Centralize all math in `calc-core.js` and delete/forbid direct math in `guided.js`/`live.js`.
+    - Add a minimal set of unit tests (even via simple JS test harness) with a shared scenario matrix to assert identical results.
+- Risk: URL param drift over time
+  - Cause: New fields added to one mode but not the other, or renamed parameters.
+  - Mitigation:
+    - Keep canonical schema in `params-schema.js` and treat it as the single reference.
+    - Document param names and meanings in `docs/architecture.md`.
+    - Add a simple schema validation helper that logs warnings for unknown/unused params.
+- Risk: Inconsistent PDF styling between modes
+  - Cause: Separate markup or CSS for print in Guided vs Live implementations.
+  - Mitigation:
+    - Use a single `pdf-export.js` and shared print CSS.
+    - Standardize PDF layout: header with logo and mode label, summary section, detailed breakdown, assumptions/definitions.
+    - Run manual visual tests from both pages and capture example PDFs for regression comparisons.
+- Risk: Cross-origin or embed constraints
+  - Cause: Embedding calculator in other sites (e.g., marketing pages) with different base URLs or iframe constraints.
+  - Mitigation:
+    - Use only relative paths (`/index.html`, `/live.html`, `/assets/...`).
+    - Avoid relying on `window.parent` or cross-origin messaging in core logic.
+    - Keep CSS self-contained to reduce conflicts when embedded.
+- Risk: Negative or counterintuitive savings results
+  - Cause: Certain inputs leading to higher cost with smart deployment vs baseline.
+  - Mitigation:
+    - Enforce a single negative-savings formatting rule in `ui-shared.js` (e.g., red text, "Additional cost" label instead of "Savings").
+    - Ensure both modes call the same formatting helper when displaying deltas.
+- Risk: URL length or readability issues
+  - Cause: Too many or overly verbose params.
+  - Mitigation:
+    - Keep params concise and numeric where possible.
+    - Avoid encoding large text blobs or assumptions; keep those static.
+- Risk: Regression when constants change
+  - Cause: Future changes to price points or hardware assumptions causing unexpected shifts.
+  - Mitigation:
+    - Isolate constants at the top of `calc-core.js` with clear comments about product ownership.
+    - Add a small changelog entry whenever constants change and re-run verification checklist.
+## F) Verification checklist
+- Scenarios and math parity
+  - [ ] For a test matrix of `cameras` and scenarios A/B/C, verify Guided and Live show identical hardware savings and software pricing outputs.
+  - [ ] Confirm that changing `software` selection and `billing` mode yields identical numbers in both modes.
+  - [ ] Validate that changes to `smartCost` and `ipCost` impact results identically in both modes.
+- State and URL behavior
+  - [ ] Changing any input in Guided updates the URL (via `history.replaceState`) without a full page reload.
+  - [ ] Copying the URL from Guided and opening `/live.html` with the same query yields matching inputs and outputs.
+  - [ ] Switching modes via the header toggle preserves state (no resets) in both directions.
+  - [ ] Loading each page without query params uses sensible defaults and does not error.
+- UI consistency
+  - [ ] Header, logo, typography, spacing, and base colors match between `index.html` and `live.html`.
+  - [ ] Progressive disclosure is click-to-reveal in both modes (no hover-only interactions).
+  - [ ] Negative savings are labeled consistently (e.g., "Additional cost" with appropriate styling).
+- PDF/print behavior
+  - [ ] PDF export works from both Guided and Live.
+  - [ ] PDFs include: logo, key inputs, high-level outputs, breakdown by component, and assumptions/definitions.
+  - [ ] Collapsible sections relevant to the PDF are expanded when printing.
+  - [ ] PDFs look acceptable in major browsers (Chrome, Edge, Safari) for common viewport sizes.
+## G) Suggested commit and branching strategy
+- Branching
+  - Create a feature branch from `main`, e.g. `feat/dual-modes-estimator`.
+  - Use short-lived sub-branches for larger steps if needed, e.g. `feat/dual-modes-math-core`, `feat/dual-modes-guided-ui`.
+- Incremental PRs
+  - PR 1: `feat(core): extract shared calc core`
+    - Introduce `calc-core.js`, move existing Live math into it, and rewire Live to use it with no functional changes.
+  - PR 2: `feat(state): add url param schema and syncing`
+    - Add `params-schema.js` and `state-sync.js`, wire Live mode to read/write state via URL.
+  - PR 3: `feat(ui): add shared header and mode switch`
+    - Extract shared header and typography styles; add the Guided/Live toggle UI in `live.html` (Guided can temporarily 404 or show a placeholder).
+  - PR 4: `feat(guided): import guided estimator ui`
+    - Bring in Julianna’s Guided estimator into `index.html` and `guided.js`, adapt to `calc-core` and canonical params.
+  - PR 5: `feat(pdf): unify pdf export and styles`
+    - Introduce `pdf-export.js` and shared print CSS; ensure both modes use it.
+  - PR 6: `chore: cleanup and docs`
+    - Remove dead code, document architecture and param schema in `docs/architecture.md`, and update README/usage notes.
+- Review discipline
+  - Ensure each PR includes:
+    - A short note on how to manually verify scenarios A/B/C.
+    - Before/after screenshots where behavior or layout changes.
+    - Confirmation of running any available lint/test/Taskfile commands once they exist for this repo.
