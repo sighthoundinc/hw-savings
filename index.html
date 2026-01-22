@@ -16,7 +16,6 @@
         darkMode: "class",
       };
     </script>
-    <script src="script.js"></script>
     <style>
       :root {
         --font-body: "Poppins", system-ui, -apple-system, BlinkMacSystemFont,
@@ -985,9 +984,10 @@
       </main>
     </div>
 
-    <script>
-      // Core calculator helpers
-      const Calculator = window.SighthoundCalculator;
+    <script src="assets/params-schema.js"></script>
+    <script src="assets/state-sync.js"></script>
+    <script src="assets/calc-core.js"></script>
+    <script src="script.js"></script>
 
       // Calculator wiring
       const totalCamerasInput = document.getElementById("totalCameras");
@@ -1137,28 +1137,6 @@
         requestAnimationFrame(frame);
       }
 
-      function syncUrlParams(totalCameras, smartCameraCost, dumbCameraCost) {
-        if (!window || !window.history || !window.location) return;
-        try {
-          const url = new URL(window.location.href);
-          url.searchParams.set("cameras", String(totalCameras));
-          url.searchParams.set("smart", String(smartCameraCost));
-          url.searchParams.set("dumb", String(dumbCameraCost));
-          window.history.replaceState({}, "", url.toString());
-        } catch (e) {}
-      }
-
-      function clearUrlParams() {
-        if (!window || !window.history || !window.location) return;
-        try {
-          const url = new URL(window.location.href);
-          url.searchParams.delete("cameras");
-          url.searchParams.delete("smart");
-          url.searchParams.delete("dumb");
-          window.history.replaceState({}, "", url.toString());
-        } catch (e) {}
-      }
-
       if (breakdownToggle && breakdownPanel) {
         breakdownToggle.addEventListener("click", () => {
           const isHidden = breakdownPanel.classList.contains("hidden");
@@ -1285,7 +1263,9 @@
             }
           });
         }
-        clearUrlParams();
+        if (State && State.writeState) {
+          State.writeState(null);
+        }
         updateResults();
       }
 
@@ -1575,7 +1555,13 @@
         resultsPanel.classList.remove("hidden");
 
         // Keep URL shareable with current configuration
-        syncUrlParams(totalCameras, smartCameraCost, dumbCameraCost);
+        if (State && State.writeState) {
+          State.writeState({
+            cameras: totalCameras,
+            smart: smartCameraCost,
+            dumb: dumbCameraCost,
+          });
+        }
 
         const isSavingsPositiveOrZero = savings >= 0;
 
@@ -1935,27 +1921,25 @@
         applyFlashForSource(sourceKey);
       }
 
-      function initFromQueryParams() {
-        if (!window || !window.location) return;
+      function initFromState() {
+        if (!State || !State.readState) return;
         try {
-          const url = new URL(window.location.href);
-          const camerasParam = url.searchParams.get("cameras");
-          const smartParam = url.searchParams.get("smart");
-          const dumbParam = url.searchParams.get("dumb");
+          const state = State.readState();
+          if (!state || typeof state !== "object") return;
 
-          if (camerasParam && totalCamerasInput) {
-            totalCamerasInput.value = camerasParam;
+          if (state.cameras !== undefined && state.cameras !== null && totalCamerasInput) {
+            totalCamerasInput.value = state.cameras;
           }
-          if (smartParam && smartCameraCostInput) {
-            smartCameraCostInput.value = smartParam;
+          if (state.smart !== undefined && state.smart !== null && smartCameraCostInput) {
+            smartCameraCostInput.value = state.smart;
           }
-          if (dumbParam && dumbCameraCostInput) {
-            dumbCameraCostInput.value = dumbParam;
+          if (state.dumb !== undefined && state.dumb !== null && dumbCameraCostInput) {
+            dumbCameraCostInput.value = state.dumb;
           }
         } catch (e) {}
       }
 
-      initFromQueryParams();
+      initFromState();
       updateResults();
 
       const inputToSourceKey = [
