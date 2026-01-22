@@ -578,6 +578,7 @@
               <div id="resultsPanel" class="hidden space-y-4">
                 <!-- Cost comparison -->
                 <div
+                  id="costComparisonCard"
                   class="bg-slate-50 rounded-xl shadow-md border border-slate-200/80 p-5 sm:p-6"
                 >
                   <h3 class="text-sm font-semibold text-slate-800 mb-1 dark:text-slate-50">
@@ -747,6 +748,7 @@
 
                 <!-- Secondary metrics -->
                 <div
+                  id="deploymentDetailsCard"
                   class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 sm:p-6 space-y-4 dark:bg-slate-900 dark:border-slate-700"
                 >
                   <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-50">
@@ -1048,6 +1050,10 @@
       const softwareBreakdownLine = document.getElementById(
         "softwareBreakdownLine"
       );
+      const costComparisonCard = document.getElementById("costComparisonCard");
+      const deploymentDetailsCard = document.getElementById(
+        "deploymentDetailsCard"
+      );
 
       // Keep track of the last numeric results so we can animate between states
       let lastResults = null;
@@ -1169,7 +1175,7 @@
 
       function handleCameraTypeChange(changed) {
         if (!existingCamerasToggle || !smartCamerasToggle) {
-          updateResults();
+          updateResultsAndFlash("totalCameras");
           return;
         }
 
@@ -1199,7 +1205,9 @@
           }
         }
 
-        updateResults();
+        const sourceKey =
+          changed === "standard" ? "existingCamerasToggle" : "smartCamerasToggle";
+        updateResultsAndFlash(sourceKey);
       }
 
       if (existingCamerasToggle) {
@@ -1258,6 +1266,89 @@
         }
       }
 
+      function toggleWithFade(el, show) {
+        if (!el) return;
+
+        el.classList.add(
+          "transition-opacity",
+          "duration-150",
+          "ease-out",
+          "transform"
+        );
+
+        if (show) {
+          if (!el.classList.contains("hidden")) {
+            el.classList.remove("opacity-0", "translate-y-1");
+            el.classList.add("opacity-100", "translate-y-0");
+            return;
+          }
+
+          el.classList.remove("hidden");
+          el.classList.add("opacity-0", "translate-y-1");
+          el.classList.remove("opacity-100", "translate-y-0");
+
+          requestAnimationFrame(() => {
+            el.classList.remove("opacity-0", "translate-y-1");
+            el.classList.add("opacity-100", "translate-y-0");
+          });
+        } else {
+          if (el.classList.contains("hidden")) return;
+
+          el.classList.remove("opacity-100", "translate-y-0");
+          el.classList.add("opacity-0", "translate-y-1");
+
+          const handle = (event) => {
+            if (event.target !== el) return;
+            el.classList.add("hidden");
+            el.removeEventListener("transitionend", handle);
+          };
+
+          el.addEventListener("transitionend", handle);
+        }
+      }
+
+      function flash(el, variant = "neutral") {
+        if (!el) return;
+
+        const baseRingClasses = ["ring-2", "ring-offset-2"];
+        const neutralBgClass = "bg-slate-50";
+        let ringColorClass = "ring-slate-300";
+        let addBackground = false;
+
+        if (variant === "savings-positive") {
+          ringColorClass = "ring-green-300";
+        } else if (variant === "savings-negative") {
+          ringColorClass = "ring-red-300";
+        } else {
+          addBackground = true;
+        }
+
+        const classesToAdd = [...baseRingClasses, ringColorClass];
+        if (addBackground) {
+          classesToAdd.push(neutralBgClass);
+        }
+
+        const allHighlightClasses = [
+          ...baseRingClasses,
+          "ring-slate-300",
+          "ring-green-300",
+          "ring-red-300",
+          neutralBgClass,
+        ];
+
+        if (el._flashTimeoutId) {
+          clearTimeout(el._flashTimeoutId);
+        }
+
+        el.classList.remove(...allHighlightClasses);
+        el.classList.add(...classesToAdd);
+
+        el._flashTimeoutId = setTimeout(() => {
+          el.classList.remove(...classesToAdd);
+          el._flashTimeoutId = null;
+        }, 500);
+      }
+
       function updateResults() {
         const sectionCurrentApproach = document.getElementById(
           "sectionCurrentApproach"
@@ -1310,26 +1401,22 @@
         ) {
           if (scenario === "A") {
             costPerCameraLabel.textContent = "Cost per camera (hardware only)";
-            costPerCameraBeforeRow.classList.remove("hidden");
-            costPerCameraAfterRow.classList.remove("hidden");
+            toggleWithFade(costPerCameraBeforeRow, true);
+            toggleWithFade(costPerCameraAfterRow, true);
           } else if (scenario === "B") {
             costPerCameraLabel.textContent =
               "Effective per-camera enablement cost (hardware only)";
-            costPerCameraBeforeRow.classList.add("hidden");
-            costPerCameraAfterRow.classList.remove("hidden");
+            toggleWithFade(costPerCameraBeforeRow, false);
+            toggleWithFade(costPerCameraAfterRow, true);
           } else {
             costPerCameraLabel.textContent = "Cost per camera (hardware only)";
-            costPerCameraBeforeRow.classList.add("hidden");
-            costPerCameraAfterRow.classList.remove("hidden");
+            toggleWithFade(costPerCameraBeforeRow, false);
+            toggleWithFade(costPerCameraAfterRow, true);
           }
         }
 
         if (sectionCurrentApproach) {
-          if (scenario === "A") {
-            sectionCurrentApproach.classList.remove("hidden");
-          } else {
-            sectionCurrentApproach.classList.add("hidden");
-          }
+          toggleWithFade(sectionCurrentApproach, scenario === "A");
         }
 
         const standardIpCameraCostGroup = document.getElementById(
@@ -1338,21 +1425,18 @@
         const scenarioBNote = document.getElementById("scenarioBNote");
 
         if (standardIpCameraCostGroup) {
-          if (scenario === "A" || scenario === "C") {
-            standardIpCameraCostGroup.classList.remove("hidden");
-            standardIpCameraCostGroup.classList.remove("opacity-60");
-            standardIpCameraCostGroup.classList.remove("pointer-events-none");
-          } else {
-            standardIpCameraCostGroup.classList.add("hidden");
+          const shouldShowStandardCost = scenario === "A" || scenario === "C";
+          toggleWithFade(standardIpCameraCostGroup, shouldShowStandardCost);
+          if (shouldShowStandardCost) {
+            standardIpCameraCostGroup.classList.remove(
+              "opacity-60",
+              "pointer-events-none"
+            );
           }
         }
 
         if (scenarioBNote) {
-          if (scenario === "B") {
-            scenarioBNote.classList.remove("hidden");
-          } else {
-            scenarioBNote.classList.add("hidden");
-          }
+          toggleWithFade(scenarioBNote, scenario === "B");
         }
 
         const hasExistingCameras = hasStandardIp && !hasSmartCameras;
@@ -1450,6 +1534,8 @@
           softwareMonthlyTotal,
           softwareYearlyTotal,
           effectiveSoftwareTotal,
+          scenario,
+          isSavingsPositiveOrZero,
         };
 
         // Toggle panels
@@ -1464,7 +1550,7 @@
         // Scenario-specific primary card and savings logic (Scenario A only)
         if (scenario === "A") {
           if (primaryCard) {
-            primaryCard.classList.remove("hidden");
+            toggleWithFade(primaryCard, true);
           }
 
           if (primaryLabelText) {
@@ -1480,11 +1566,15 @@
           );
 
           if (primaryCard) {
+            const basePrimaryClasses =
+              "rounded-xl shadow-sm border p-5 sm:p-6 flex flex-col gap-4 dark:bg-slate-900 dark:border-slate-700";
+            const positiveClasses =
+              " bg-green-50 border border-green-200 border-l-4 border-l-green-500";
+            const negativeClasses =
+              " bg-red-50 border border-red-200 border-l-4 border-l-red-500";
             primaryCard.className =
-              "rounded-xl shadow-sm border p-5 sm:p-6 flex flex-col gap-4 " +
-              (isSavingsPositiveOrZero
-                ? "border-slate-200 bg-gradient-to-br from-sky-50/80 via-slate-50 to-emerald-50/80 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900"
-                : "border-rose-100 bg-rose-50/80 dark:border-rose-900 dark:bg-rose-950");
+              basePrimaryClasses +
+              (isSavingsPositiveOrZero ? positiveClasses : negativeClasses);
           }
 
           if (primaryLabel) {
@@ -1497,7 +1587,7 @@
 
           if (primaryValue) {
             primaryValue.className =
-              "mt-1 text-3xl sm:text-4xl font-semibold tracking-tight tabular-nums " +
+              "mt-1 text-4xl sm:text-5xl font-semibold tracking-tight tabular-nums " +
               (isSavingsPositiveOrZero
                 ? "text-emerald-600 dark:text-emerald-400"
                 : "text-rose-600 dark:text-rose-400");
@@ -1524,7 +1614,7 @@
             "h-4 w-4 transition-transform duration-150" +
             (isSavingsPositiveOrZero ? "" : " rotate-180");
         } else if (primaryCard) {
-          primaryCard.classList.add("hidden");
+          toggleWithFade(primaryCard, false);
         }
 
         // Cost comparison block (scenario-specific)
@@ -1646,10 +1736,11 @@
           (val) => Math.round(val).toLocaleString("en-US")
         );
 
+        if (percentReductionGroup) {
+          toggleWithFade(percentReductionGroup, scenario === "A");
+        }
+
         if (scenario === "A") {
-          if (percentReductionGroup) {
-            percentReductionGroup.classList.remove("hidden");
-          }
           animateNumberChange(
             percentReductionValue,
             previousResults ? previousResults.percentReduction : null,
@@ -1672,8 +1763,6 @@
               "h-3 w-3 transition-transform duration-150" +
               (isSavingsPositiveOrZero ? "" : " rotate-180");
           }
-        } else if (percentReductionGroup) {
-          percentReductionGroup.classList.add("hidden");
         }
 
         animateNumberChange(
@@ -1723,6 +1812,72 @@
         }
       }
 
+      function applyFlashForSource(sourceKey) {
+        if (!lastResults || !resultsPanel) return;
+        if (resultsPanel.classList.contains("hidden")) return;
+
+        const { scenario, savings } = lastResults;
+        const isSavingsPositiveOrZero = (savings ?? 0) >= 0;
+        const savingsVariant = isSavingsPositiveOrZero
+          ? "savings-positive"
+          : "savings-negative";
+
+        const flashSavingsIfVisible = () => {
+          if (
+            scenario === "A" &&
+            primaryCard &&
+            !primaryCard.classList.contains("hidden")
+          ) {
+            flash(primaryCard, savingsVariant);
+          }
+        };
+
+        switch (sourceKey) {
+          case "totalCameras":
+          case "existingCamerasToggle":
+          case "smartCamerasToggle": {
+            if (costComparisonCard) flash(costComparisonCard, "neutral");
+            if (deploymentDetailsCard) flash(deploymentDetailsCard, "neutral");
+            if (softwareOverview) flash(softwareOverview, "neutral");
+            flashSavingsIfVisible();
+            break;
+          }
+          case "smartCameraCost": {
+            if (costComparisonCard) flash(costComparisonCard, "neutral");
+            if (costPerCameraBeforeRow)
+              flash(costPerCameraBeforeRow, "neutral");
+            flashSavingsIfVisible();
+            break;
+          }
+          case "dumbCameraCost": {
+            if (costComparisonCard) flash(costComparisonCard, "neutral");
+            if (costPerCameraAfterRow) flash(costPerCameraAfterRow, "neutral");
+            if (scenario === "A") {
+              flashSavingsIfVisible();
+            }
+            break;
+          }
+          case "softwareSelection": {
+            if (softwareOverview) flash(softwareOverview, "neutral");
+            if (breakdownPanel && !breakdownPanel.classList.contains("hidden")) {
+              flash(breakdownPanel, "neutral");
+            }
+            break;
+          }
+          case "billingFrequency": {
+            if (softwareOverview) flash(softwareOverview, "neutral");
+            break;
+          }
+          default:
+            break;
+        }
+      }
+
+      function updateResultsAndFlash(sourceKey) {
+        updateResults();
+        applyFlashForSource(sourceKey);
+      }
+
       function initFromQueryParams() {
         if (!window || !window.location) return;
         try {
@@ -1746,22 +1901,24 @@
       initFromQueryParams();
       updateResults();
 
-      const inputElements = [
-        totalCamerasInput,
-        smartCameraCostInput,
-        dumbCameraCostInput,
-        softwareBillingFrequencySelect,
+      const inputToSourceKey = [
+        [totalCamerasInput, "totalCameras"],
+        [smartCameraCostInput, "smartCameraCost"],
+        [dumbCameraCostInput, "dumbCameraCost"],
+        [softwareBillingFrequencySelect, "billingFrequency"],
       ];
 
-      inputElements.forEach((input) => {
+      inputToSourceKey.forEach(([input, sourceKey]) => {
         if (!input) return;
-        input.addEventListener("input", updateResults);
-        input.addEventListener("change", updateResults);
+        input.addEventListener("input", () => updateResultsAndFlash(sourceKey));
+        input.addEventListener("change", () => updateResultsAndFlash(sourceKey));
       });
 
       if (softwareSelectionInputs && softwareSelectionInputs.length) {
         softwareSelectionInputs.forEach((input) => {
-          input.addEventListener("change", updateResults);
+          input.addEventListener("change", () =>
+            updateResultsAndFlash("softwareSelection")
+          );
         });
       }
     </script>
