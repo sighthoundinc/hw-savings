@@ -513,18 +513,9 @@
     });
   }
 
-  if (downloadPdfBtn) {
+  if (downloadPdfBtn && window.SighthoundPdf && typeof window.SighthoundPdf.prepareAndPrintPdf === 'function') {
     downloadPdfBtn.addEventListener('click', function () {
-      var params = state.getParams();
-      if (!params.expandBreakdown) {
-        state.update({ expandBreakdown: 1 });
-        params = state.getParams();
-      }
-      if (hasShownResults) {
-        // Ensure breakdown visibility is reflected before printing.
-        render(params);
-      }
-      window.print();
+      window.SighthoundPdf.prepareAndPrintPdf(state);
     });
   }
 

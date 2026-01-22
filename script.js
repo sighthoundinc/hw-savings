@@ -411,14 +411,10 @@
     });
   }
 
-  // Download PDF (ensures breakdown is visible, then prints)
-  if (downloadPdfButton) {
+  // Download PDF using shared print template
+  if (downloadPdfButton && window.SighthoundPdf && typeof window.SighthoundPdf.prepareAndPrintPdf === 'function') {
     downloadPdfButton.addEventListener('click', () => {
-      const params = state.getParams();
-      if (!params.expandBreakdown) {
-        state.update({ expandBreakdown: 1 });
-      }
-      window.print();
+      window.SighthoundPdf.prepareAndPrintPdf(state);
     });
   }
 
