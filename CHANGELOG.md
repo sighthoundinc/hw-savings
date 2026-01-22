@@ -81,10 +81,18 @@ This project uses date-based entries rather than semantic version numbers. Dates
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### Added
+- **Project Type Selection**: Added "Other" option (option 6) to project type selection in `warping.sh project`
+  - Prompts for custom project type when selected
+  - Allows flexibility for project types beyond CLI, TUI, REST API, Web App, and Library
 
-<<<<<<< HEAD
-=======
-## [0.2.2] - 2026-01-21
+### Changed
+- **Spec Command Output**: Improved next steps messaging in `warping.sh spec`
+  - Now displays full absolute paths to PRD.md and SPECIFICATION.md
+  - Updated AI assistant references to "Claude, Warp.dev, etc."
+  - Added steps 5-7 with guidance on reviewing, implementing, and continuing with AI
+  - Clearer instructions: "Ask your AI to read and run {full_path}"
+
 
 ### Added
 - **LICENSE.md**: Added license file with temporary usage terms through 2026
@@ -92,7 +100,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Future plans for permissive license preventing resale
 - **Copyright Notice**: Added copyright to README.md with contact email
 
-## [0.2.1] - 2026-01-18
 
 >>>>>>> 1255926 (docs: update CHANGELOG.md for v0.2.2 release)
 ### Added
@@ -183,7 +190,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Consistent path references across all markdown files
 - Cross-reference links in language and interface files
 
-## [0.1.0] - Initial Release
 
 Initial release of the Warping framework with:
 - Core AI guidelines (main.md)
