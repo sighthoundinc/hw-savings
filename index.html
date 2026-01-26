@@ -43,90 +43,37 @@
   </head>
   <body class="min-h-screen bg-white text-slate-900 antialiased" data-mode="guided">
     <div class="min-h-screen flex flex-col">
-      <header class="no-print border-b border-slate-200 bg-white/90 backdrop-blur">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
-          <a href="index.html" class="flex items-center gap-3">
-            <img
-              src="assets/sighthound-logo-black.png"
-              alt="Sighthound"
-              class="h-6 w-auto"
-            />
-            <div class="hidden sm:flex flex-col">
-              <span class="text-xs font-semibold uppercase tracking-wide text-slate-900">
-                Sighthound
-              </span>
-              <span class="text-[11px] text-slate-500">
-                Hardware savings calculator
-              </span>
-            </div>
-          </a>
-          <nav class="flex items-center gap-1 text-xs sm:text-sm">
-            <button
-              type="button"
-              data-mode-target="guided"
-              class="px-3 py-1.5 rounded-full border border-transparent bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
-            >
-              Guided estimate
-            </button>
-            <button
-              type="button"
-              data-mode-target="live"
-              class="px-3 py-1.5 rounded-full border border-transparent bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
-            >
-              Live comparison
-            </button>
-          </nav>
-        </div>
-      </header>
-
       <main class="flex-1">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-          <!-- Hero -->
-          <section class="no-print mb-8">
-            <p class="text-xs font-semibold tracking-wide uppercase text-slate-500">
-              Sighthound architecture analysis
+          <div class="no-print flex justify-end mb-4">
+            <nav class="inline-flex items-center gap-1 text-xs sm:text-sm rounded-full bg-slate-100/80 p-0.5 shadow-sm">
+              <button
+                type="button"
+                data-mode-target="guided"
+                class="px-3 py-1.5 rounded-full border border-transparent text-slate-700 transition-colors"
+              >
+                Guided estimate
+              </button>
+              <button
+                type="button"
+                data-mode-target="live"
+                class="px-3 py-1.5 rounded-full border border-transparent text-slate-700 transition-colors"
+              >
+                Live comparison
+              </button>
+            </nav>
+          </div>
+          <!-- Mode intro -->
+          <section class="no-print mb-6 text-xs sm:text-sm text-slate-600">
+            <p>
+              Answer a few quick questions about your cameras and deployment to calculate recommended Compute Nodes and separate hardware from recurring software costs.
             </p>
-            <div class="mt-2 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-              <div class="md:max-w-xl">
-                <h1 class="text-2xl sm:text-3xl font-semibold text-slate-900">
-                  Guided estimate for your hardware and software costs.
-                </h1>
-                <p class="mt-3 text-sm sm:text-base text-slate-600">
-                  Answer a few short questions about your cameras and deployment. We will
-                  size the required Compute Nodes, separate hardware vs. software costs, and
-                  show how your configuration compares to a smart-camera architecture.
-                </p>
-                <div class="mt-4 flex flex-wrap items-center gap-2 text-[11px] font-medium text-slate-600">
-                  <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1">
-                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                    <span class="uppercase tracking-wide">No signup</span>
-                  </span>
-                  <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1">
-                    <span class="h-1.5 w-1.5 rounded-full bg-sky-500"></span>
-                    <span class="uppercase tracking-wide">Instant results</span>
-                  </span>
-                  <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1">
-                    <span class="h-1.5 w-1.5 rounded-full bg-slate-500"></span>
-                    <span class="uppercase tracking-wide">PDF ready</span>
-                  </span>
-                </div>
-              </div>
-              <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm text-xs text-slate-600 max-w-xs">
-                <h2 class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                  What this guided estimate does
-                </h2>
-                <ul class="mt-2 space-y-1.5 list-disc list-inside">
-                  <li>Uses a single shared math engine for all modes.</li>
-                  <li>Keeps hardware upfront separate from recurring software.</li>
-                  <li>Stores your answers in the URL so you can share or switch modes.</li>
-                </ul>
-              </div>
-            </div>
           </section>
 
           <div class="max-w-3xl mx-auto space-y-6 lg:space-y-8">
             <!-- Guided wizard -->
             <section
+              id="guidedWizardCard"
               class="bg-slate-50 rounded-xl shadow-md border border-slate-200/80 p-5 sm:p-6"
             >
               <header class="flex items-baseline justify-between gap-3 mb-3">
@@ -467,7 +414,7 @@
                 </div>
                 <div class="text-right text-[11px] text-slate-500">
                   <p>
-                    Nodes per cameras and pricing are shared with Live comparison.
+                    Node capacity and pricing use fixed assumptions for a typical deployment.
                   </p>
                 </div>
               </header>

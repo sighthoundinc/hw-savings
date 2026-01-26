@@ -48,75 +48,31 @@
   </head>
   <body class="min-h-screen bg-white text-slate-900 antialiased" data-mode="live">
     <div class="min-h-screen flex flex-col">
-      <header class="no-print border-b border-slate-200 bg-white/90 backdrop-blur">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
-          <a href="index.html" class="flex items-center gap-3">
-            <img
-              src="assets/sighthound-logo-black.png"
-              alt="Sighthound"
-              class="h-6 w-auto"
-            />
-            <div class="hidden sm:flex flex-col">
-              <span class="text-xs font-semibold uppercase tracking-wide text-slate-900">
-                Sighthound
-              </span>
-              <span class="text-[11px] text-slate-500">
-                Hardware savings calculator
-              </span>
-            </div>
-          </a>
-          <nav class="flex items-center gap-1 text-xs sm:text-sm">
-            <button
-              type="button"
-              data-mode-target="guided"
-              class="px-3 py-1.5 rounded-full border border-transparent bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
-            >
-              Guided estimate
-            </button>
-            <button
-              type="button"
-              data-mode-target="live"
-              class="px-3 py-1.5 rounded-full border border-transparent bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
-            >
-              Live comparison
-            </button>
-          </nav>
-        </div>
-      </header>
-      <!-- Main content -->
       <main class="flex-1">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-          <div class="mb-6 space-y-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 no-print">
+          <div class="no-print flex justify-end mb-4">
+            <nav class="inline-flex items-center gap-1 text-xs sm:text-sm rounded-full bg-slate-100/80 p-0.5 shadow-sm">
+              <button
+                type="button"
+                data-mode-target="guided"
+                class="px-3 py-1.5 rounded-full border border-transparent text-slate-700 transition-colors"
+              >
+                Guided estimate
+              </button>
+              <button
+                type="button"
+                data-mode-target="live"
+                class="px-3 py-1.5 rounded-full border border-transparent text-slate-700 transition-colors"
+              >
+                Live comparison
+              </button>
+            </nav>
+          </div>
+          <div class="mb-6 text-xs sm:text-sm text-slate-600 dark:text-slate-300 no-print">
             <p>
-              Most AI camera deployments push compute into every camera. That works, but it’s often expensive and inflexible.
-            </p>
-            <p>
-              Sighthound takes a different approach. AI runs on a dedicated Compute Node that connects to standard IP cameras, making them smart without replacing your existing infrastructure.
-            </p>
-            <p>
-              Use this calculator to compare upfront hardware costs side by side.
+              Adjust the assumptions below to see how centralizing AI on a Compute Node compares to buying smart cameras for every location. Results update instantly as you change the inputs.
             </p>
           </div>
-          <section class="mb-6 space-y-2 text-sm text-slate-600 dark:text-slate-300 no-print">
-            <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-50">
-              How this works
-            </h2>
-            <div class="mt-1 inline-flex flex-wrap items-center gap-2 text-[11px] sm:text-xs font-medium text-slate-700 dark:text-slate-200">
-              <div class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 dark:bg-slate-800">
-                <span class="h-1.5 w-1.5 rounded-full bg-slate-900 dark:bg-slate-100"></span>
-                <span class="uppercase tracking-wide">Step 1</span>
-                <span class="text-slate-500 dark:text-slate-400">Enter cameras &amp; hardware costs</span>
-              </div>
-              <div class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 dark:bg-slate-800">
-                <span class="h-1.5 w-1.5 rounded-full bg-sky-600"></span>
-                <span class="uppercase tracking-wide">Step 2</span>
-                <span class="text-slate-500 dark:text-slate-400">Review savings &amp; deployment details</span>
-              </div>
-              <span class="ml-1 text-[11px] font-normal text-sky-700 dark:text-sky-400">
-                Updates instantly as you type.
-              </span>
-            </div>
-          </section>
           <div id="layoutGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
             <!-- Inputs column -->
             <section class="bg-slate-50 rounded-xl shadow-md border border-slate-200/80 p-5 sm:p-6 space-y-5">
@@ -172,7 +128,7 @@
                   </p>
                 </div>
 
-                <!-- Existing standard IP cameras toggle -->
+                <!-- Existing standard IP cameras -->
                 <div class="space-y-1.5">
                   <p class="block text-sm font-medium text-slate-700 dark:text-slate-200">
                     Do you already have standard IP cameras installed?
@@ -185,14 +141,26 @@
                       ⓘ
                     </button>
                   </p>
-                  <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-                    <input
-                      id="existingCamerasToggle"
-                      type="checkbox"
-                      class="h-3.5 w-3.5 rounded border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600"
-                    />
-                    <label for="existingCamerasToggle" class="select-none">
-                      Yes, we already have standard IP cameras installed.
+                  <div class="flex flex-wrap gap-3 text-xs text-slate-600 dark:text-slate-300">
+                    <label class="inline-flex items-center gap-2">
+                      <input
+                        id="existingCamerasToggle"
+                        type="radio"
+                        name="existingCamerasGroup"
+                        value="yes"
+                        class="h-3.5 w-3.5 border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600"
+                      />
+                      <span class="select-none">Yes, we already have standard IP cameras installed.</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input
+                        id="existingCamerasToggleNo"
+                        type="radio"
+                        name="existingCamerasGroup"
+                        value="no"
+                        class="h-3.5 w-3.5 border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600"
+                      />
+                      <span class="select-none">No, we will add standard IP cameras as part of this deployment.</span>
                     </label>
                   </div>
                   <p
@@ -203,7 +171,7 @@
                   </p>
                 </div>
 
-                <!-- Smart / edge cameras toggle -->
+                <!-- Smart / edge cameras -->
                 <div class="space-y-1.5">
                   <p class="block text-sm font-medium text-slate-700 dark:text-slate-200">
                     Do you currently use smart / edge cameras with built-in analytics?
@@ -216,14 +184,26 @@
                       ⓘ
                     </button>
                   </p>
-                  <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-                    <input
-                      id="smartCamerasToggle"
-                      type="checkbox"
-                      class="h-3.5 w-3.5 rounded border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600"
-                    />
-                    <label for="smartCamerasToggle" class="select-none">
-                      Yes, we currently use smart / edge cameras with built-in analytics.
+                  <div class="flex flex-wrap gap-3 text-xs text-slate-600 dark:text-slate-300">
+                    <label class="inline-flex items-center gap-2">
+                      <input
+                        id="smartCamerasToggle"
+                        type="radio"
+                        name="smartCamerasGroup"
+                        value="yes"
+                        class="h-3.5 w-3.5 border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600"
+                      />
+                      <span class="select-none">Yes, we currently use smart / edge cameras with built-in analytics.</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input
+                        id="smartCamerasToggleNo"
+                        type="radio"
+                        name="smartCamerasGroup"
+                        value="no"
+                        class="h-3.5 w-3.5 border-slate-300 text-sky-600 focus:ring-sky-500 dark:border-slate-600"
+                      />
+                      <span class="select-none">No, we do not currently use smart / edge cameras.</span>
                     </label>
                   </div>
                   <p
@@ -371,19 +351,18 @@
                   <div class="mt-1 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                     <label class="flex items-start gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 cursor-pointer dark:border-slate-700 dark:bg-slate-900">
                       <input
-                        type="radio"
-                        name="softwareSelection"
-                        value="lpr"
+                        id="softwareLpr"
+                        type="checkbox"
                         class="mt-0.5 h-3.5 w-3.5 text-sky-600 border-slate-300 focus:ring-sky-500 dark:border-slate-600"
                       />
                       <span class="flex flex-col">
                         <span class="font-medium text-slate-800 dark:text-slate-100">
-                          LPR only
+                          LPR
                           <button
                             type="button"
                             class="ml-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full border border-slate-300 bg-white text-[9px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
                             data-helper-target="lprHelper"
-                            aria-label="Help: LPR only"
+                            aria-label="Help: LPR"
                           >
                             ⓘ
                           </button>
@@ -399,19 +378,18 @@
                     </label>
                     <label class="flex items-start gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 cursor-pointer dark:border-slate-700 dark:bg-slate-900">
                       <input
-                        type="radio"
-                        name="softwareSelection"
-                        value="mmcg"
+                        id="softwareMmcg"
+                        type="checkbox"
                         class="mt-0.5 h-3.5 w-3.5 text-sky-600 border-slate-300 focus:ring-sky-500 dark:border-slate-600"
                       />
                       <span class="flex flex-col">
                         <span class="font-medium text-slate-800 dark:text-slate-100">
-                          MMCG only
+                          MMCG
                           <button
                             type="button"
                             class="ml-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full border border-slate-300 bg-white text-[9px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
                             data-helper-target="mmcgHelper"
-                            aria-label="Help: MMCG only"
+                            aria-label="Help: MMCG"
                           >
                             ⓘ
                           </button>
@@ -425,34 +403,9 @@
                         </span>
                       </span>
                     </label>
-                    <label class="flex items-start gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 cursor-pointer dark:border-slate-700 dark:bg-slate-900">
-                      <input
-                        type="radio"
-                        name="softwareSelection"
-                        value="both"
-                        class="mt-0.5 h-3.5 w-3.5 text-sky-600 border-slate-300 focus:ring-sky-500 dark:border-slate-600"
-                      />
-                      <span class="flex flex-col">
-                        <span class="font-medium text-slate-800 dark:text-slate-100">
-                          Both (LPR + MMCG)
-                          <button
-                            type="button"
-                            class="ml-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full border border-slate-300 bg-white text-[9px] font-semibold text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1"
-                            data-helper-target="bothHelper"
-                            aria-label="Help: LPR + MMCG"
-                          >
-                            ⓘ
-                          </button>
-                        </span>
-                        <span class="text-[11px] text-slate-500 dark:text-slate-400">$55 / camera / month</span>
-                        <span
-                          id="bothHelper"
-                          class="text-[11px] text-slate-500 dark:text-slate-400 hidden"
-                        >
-                          Combined LPR and MMCG analytics per camera stream.
-                        </span>
-                      </span>
-                    </label>
+                    <div class="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-500 dark:border-slate-700 dark:bg-slate-900/40 dark:text-slate-400">
+                      Leave both options off for hardware-only estimates, or turn on one or both analytics as needed.
+                    </div>
                   </div>
                 </div>
 
@@ -504,22 +457,7 @@
 
             <!-- Results column -->
             <section class="space-y-4">
-              <!-- Header shown above results (also used in print/PDF) -->
-              <div class="mb-4 flex items-center justify-between gap-3">
-                <div>
-                  <h1 class="text-xl font-semibold text-slate-900">
-                    Hardware savings estimate
-                  </h1>
-                  <p class="mt-1 text-xs text-slate-500">
-                    Generated with the Sighthound hardware savings calculator.
-                  </p>
-                </div>
-                <img
-                  src="assets/sighthound-logo-black.png"
-                  alt="Sighthound logo"
-                  class="h-5"
-                />
-              </div>
+              <!-- Header above results intentionally removed to avoid duplicating iframe copy and top-of-page intro. -->
               <!-- Placeholder state -->
               <div
                 id="resultsPlaceholder"

@@ -17,11 +17,14 @@
   const totalCamerasInput = document.getElementById('totalCameras');
   const smartCameraCostInput = document.getElementById('smartCameraCost');
   const dumbCameraCostInput = document.getElementById('dumbCameraCost');
-  const existingCamerasToggle = document.getElementById('existingCamerasToggle');
-  const smartCamerasToggle = document.getElementById('smartCamerasToggle');
+  const existingCamerasToggle = document.getElementById('existingCamerasToggle'); // "Yes" option
+  const existingCamerasToggleNo = document.getElementById('existingCamerasToggleNo'); // "No" option
+  const smartCamerasToggle = document.getElementById('smartCamerasToggle'); // "Yes" option
+  const smartCamerasToggleNo = document.getElementById('smartCamerasToggleNo'); // "No" option
   const cameraTypeExclusivityNote = document.getElementById('cameraTypeExclusivityNote');
   const resetCalculatorButton = document.getElementById('resetCalculatorButton');
-  const softwareSelectionInputs = document.querySelectorAll('input[name="softwareSelection"]');
+  const softwareLprCheckbox = document.getElementById('softwareLpr');
+  const softwareMmcgCheckbox = document.getElementById('softwareMmcg');
   const softwareBillingFrequencySelect = document.getElementById('softwareBillingFrequency');
 
   // Sections
@@ -135,25 +138,20 @@
     if (existingCamerasToggle) {
       existingCamerasToggle.checked = !!p.hasExistingCameras;
     }
+    if (existingCamerasToggleNo) {
+      existingCamerasToggleNo.checked = !p.hasExistingCameras;
+    }
     if (smartCamerasToggle) {
       smartCamerasToggle.checked = !!p.hasSmartCameras;
     }
+    if (smartCamerasToggleNo) {
+      smartCamerasToggleNo.checked = !p.hasSmartCameras;
+    }
 
-    if (softwareSelectionInputs && softwareSelectionInputs.length) {
-      let matched = false;
-      softwareSelectionInputs.forEach((input) => {
-        if (input.value === p.software) {
-          input.checked = true;
-          matched = true;
-        } else if (p.software === 'none') {
-          input.checked = false;
-        }
-      });
-      if (!matched && p.software === 'both') {
-        softwareSelectionInputs.forEach((input) => {
-          if (input.value === 'both') input.checked = true;
-        });
-      }
+    if (softwareLprCheckbox && softwareMmcgCheckbox) {
+      const selection = (p.software || 'none').toLowerCase();
+      softwareLprCheckbox.checked = selection === 'lpr' || selection === 'both';
+      softwareMmcgCheckbox.checked = selection === 'mmcg' || selection === 'both';
     }
 
     if (softwareBillingFrequencySelect) {
@@ -235,14 +233,11 @@
       sighthoundLabelText.textContent = hardware.labels.sighthoundLabel;
     }
 
-    // Camera cost input helper
+    // Camera cost input helper: always allow editing IP camera cost even when
+    // reusing existing cameras. Scenario B messaging is handled via scenarioBNote.
     if (standardIpCameraCostGroup) {
       show(standardIpCameraCostGroup);
-      if (scenario === 'b') {
-        standardIpCameraCostGroup.classList.add('opacity-60', 'pointer-events-none');
-      } else {
-        standardIpCameraCostGroup.classList.remove('opacity-60', 'pointer-events-none');
-      }
+      standardIpCameraCostGroup.classList.remove('opacity-60', 'pointer-events-none');
     }
     if (scenarioBNote) {
       if (scenario === 'b') show(scenarioBNote); else hide(scenarioBNote);
@@ -452,13 +447,16 @@
   }
 
   // Camera type toggles (mutually exclusive)
+  // Camera type toggles (mutually exclusive between "Yes" answers). Each
+  // question now has explicit Yes/No options; answering "Yes" on one will
+  // automatically set "No" on the other when they conflict.
   if (existingCamerasToggle) {
     existingCamerasToggle.addEventListener('change', () => {
+      if (!existingCamerasToggle.checked) return;
       const params = state.getParams();
-      const checked = !!existingCamerasToggle.checked;
-      const partial = { hasExistingCameras: checked ? 1 : 0 };
+      const partial = { hasExistingCameras: 1 };
       let autoCorrected = false;
-      if (checked && params.hasSmartCameras) {
+      if (params.hasSmartCameras) {
         partial.hasSmartCameras = 0;
         autoCorrected = true;
       }
@@ -468,14 +466,21 @@
       state.update(partial);
     });
   }
+  if (existingCamerasToggleNo) {
+    existingCamerasToggleNo.addEventListener('change', () => {
+      if (!existingCamerasToggleNo.checked) return;
+      state.update({ hasExistingCameras: 0 });
+      if (cameraTypeExclusivityNote) hide(cameraTypeExclusivityNote);
+    });
+  }
 
   if (smartCamerasToggle) {
     smartCamerasToggle.addEventListener('change', () => {
+      if (!smartCamerasToggle.checked) return;
       const params = state.getParams();
-      const checked = !!smartCamerasToggle.checked;
-      const partial = { hasSmartCameras: checked ? 1 : 0 };
+      const partial = { hasSmartCameras: 1 };
       let autoCorrected = false;
-      if (checked && params.hasExistingCameras) {
+      if (params.hasExistingCameras) {
         partial.hasExistingCameras = 0;
         autoCorrected = true;
       }
@@ -483,6 +488,13 @@
         if (autoCorrected) show(cameraTypeExclusivityNote); else hide(cameraTypeExclusivityNote);
       }
       state.update(partial);
+    });
+  }
+  if (smartCamerasToggleNo) {
+    smartCamerasToggleNo.addEventListener('change', () => {
+      if (!smartCamerasToggleNo.checked) return;
+      state.update({ hasSmartCameras: 0 });
+      if (cameraTypeExclusivityNote) hide(cameraTypeExclusivityNote);
     });
   }
 
@@ -511,12 +523,25 @@
     dumbCameraCostInput.addEventListener('change', handler);
   }
 
-  if (softwareSelectionInputs && softwareSelectionInputs.length) {
-    softwareSelectionInputs.forEach((input) => {
-      input.addEventListener('change', () => {
-        state.update({ software: input.value });
-      });
-    });
+  function deriveSoftwareSelectionFromCheckboxes() {
+    const lpr = softwareLprCheckbox && softwareLprCheckbox.checked;
+    const mmcg = softwareMmcgCheckbox && softwareMmcgCheckbox.checked;
+    if (lpr && mmcg) return 'both';
+    if (lpr) return 'lpr';
+    if (mmcg) return 'mmcg';
+    return 'none';
+  }
+
+  function handleSoftwareCheckboxChange() {
+    const selection = deriveSoftwareSelectionFromCheckboxes();
+    state.update({ software: selection });
+  }
+
+  if (softwareLprCheckbox) {
+    softwareLprCheckbox.addEventListener('change', handleSoftwareCheckboxChange);
+  }
+  if (softwareMmcgCheckbox) {
+    softwareMmcgCheckbox.addEventListener('change', handleSoftwareCheckboxChange);
   }
 
   if (softwareBillingFrequencySelect) {

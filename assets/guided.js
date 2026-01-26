@@ -49,6 +49,8 @@
   var resultsStatusEl = document.getElementById('guidedResultsStatus');
   var resultsPlaceholderEl = document.getElementById('guidedResultsPlaceholder');
   var resultsBodyEl = document.getElementById('guidedResultsBody');
+  var wizardCardEl = document.getElementById('guidedWizardCard');
+  var resultsCardEl = document.getElementById('guidedResultsCard');
 
   var scenarioSummaryEl = document.getElementById('guidedScenarioSummary');
   var todayTotalEl = document.getElementById('guidedTodayTotal');
@@ -93,6 +95,8 @@
   function hideResults() {
     if (resultsBodyEl) resultsBodyEl.classList.add('hidden');
     if (resultsPlaceholderEl) resultsPlaceholderEl.classList.remove('hidden');
+    if (resultsCardEl) resultsCardEl.classList.add('hidden');
+    if (wizardCardEl) wizardCardEl.classList.remove('hidden');
   }
 
   function markResultsStale() {
@@ -322,6 +326,8 @@
 
     // Guided mode: do not show live results while the user is still answering steps.
     if (!hasShownResults) {
+      if (wizardCardEl) wizardCardEl.classList.remove('hidden');
+      if (resultsCardEl) resultsCardEl.classList.add('hidden');
       if (resultsStatusEl) {
         resultsStatusEl.textContent = 'Answer the next questions to generate your estimate.';
       }
@@ -332,6 +338,8 @@
 
     // Once results have been shown, require at least one camera to render them.
     if (!hasValidCameras) {
+      if (wizardCardEl) wizardCardEl.classList.remove('hidden');
+      if (resultsCardEl) resultsCardEl.classList.add('hidden');
       if (resultsStatusEl) {
         resultsStatusEl.textContent = 'Enter at least one camera to generate your estimate.';
       }
@@ -339,6 +347,10 @@
       if (resultsBodyEl) resultsBodyEl.classList.add('hidden');
       return;
     }
+
+    // At this point we have a valid estimate: replace the wizard card with the results card.
+    if (wizardCardEl) wizardCardEl.classList.add('hidden');
+    if (resultsCardEl) resultsCardEl.classList.remove('hidden');
 
     var result = CalcCore.computeScenarioResults(p);
     var hardware = result.hardware;
@@ -668,6 +680,8 @@
   var initialParams = state.getParams();
   hydrateFromParams(initialParams);
   updateStepUi();
+  // Initial view: wizard only; hide results until the user explicitly asks to see them.
+  hideResults();
 
   // Dev-only: guard against URL/params drift using canonical round-trip.
   if (Params && typeof Params.assertCanonicalRoundTrip === 'function') {

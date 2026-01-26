@@ -79,14 +79,13 @@ The calculator is delivered as a dual-mode, single-site experience. Both modes s
     - Uses the same calculation core and constants.
     - Designed to stay on a single screen for typical demo resolutions.
 
-### 4.2 Shared header and mode switch
+### 4.2 Shared mode switch
 
-- Both `index.html` and `live.html` include a shared header with:
-  - Sighthound logo and product label (“Hardware savings calculator”).
-  - A **mode switch** with two options:
-    - “Guided estimate”
-    - “Live comparison”
-- The active mode is visually highlighted; the inactive mode is rendered as a secondary button or link.
+- Both `index.html` and `live.html` include a shared **mode switch** with two options, rendered inline in the main content rather than as a separate branded page header:
+  - “Guided estimate”
+  - “Live comparison”
+- The active mode is visually highlighted; the inactive mode is rendered as a secondary pill-style button.
+- The surrounding chrome is intentionally minimal so the calculator feels like a single, continuous experience when embedded.
 
 ### 4.3 Mode switching behavior
 
@@ -277,7 +276,7 @@ These values:
   - Must be clearly labeled as “software” and “recurring”.
   - Must not be confused with the primary hardware savings number.
 
-## 7. PDF / Print Export
+## 10. PDF / Print Export
 
 The calculator supports a shared print/PDF export used by both modes for follow-ups and documentation.
 
@@ -352,7 +351,7 @@ The calculator supports a shared print/PDF export used by both modes for follow-
 
 ## 8. Functional Requirements
 
-### 4.1 Inputs
+### 9.1 Inputs
 
 - **Camera count**
   - Field: integer `totalCameras`.
@@ -377,13 +376,24 @@ The calculator supports a shared print/PDF export used by both modes for follow-
   - Default: empty (ignored when blank).
   - Not persisted in the URL (local, rough comparison only).
 
-- **Existing cameras toggle**
-  - Label: “We already have standard IP cameras installed in this system.”
-  - Field: boolean `existingCameras`.
+- **Existing cameras question**
+  - Label: “Do you already have standard IP cameras installed?”
+  - Representation: radio group with explicit **Yes** / **No** options.
+  - Backing field: boolean `hasExistingCameras` (URL param), derived from the selected answer.
   - Behavior:
-    - When checked, Sighthound side assumes **zero** new camera hardware cost.
-    - Still requires Compute Nodes based on camera count.
+    - When **Yes**, Sighthound side assumes **zero** new camera hardware cost (cameras are reused).
+    - When **No**, Sighthound side includes new standard IP camera hardware (per `ipCost`).
+    - Always still requires Compute Nodes based on camera count.
     - Affects formula for `sighthoundTotal` (see below), **but does not change node capacity or price**.
+
+- **Smart / edge cameras question**
+  - Label: “Do you currently use smart / edge cameras with built-in analytics?”
+  - Representation: radio group with explicit **Yes** / **No** options.
+  - Backing field: boolean `hasSmartCameras` (URL param), derived from the selected answer.
+  - Behavior:
+    - When **Yes**, the calculator treats the "today" architecture as smart / edge cameras (Scenario A).
+    - When **No**, the smart-camera baseline is not assumed; combined with the existing cameras answer, this yields Scenario B or C.
+    - If both questions would otherwise be "Yes", the implementation automatically corrects the conflicting one to **No** and shows a small note that a camera cannot be both standard and smart at the same time.
 
 - **Optional “share details” / CTA-related checkbox**
   - Boolean controlling inclusion of extra context in shared links/emails.
@@ -488,7 +498,38 @@ The app computes:
   - May depend on “share details” checkbox.
   - Must be the **last** card.
 
-### 4.4 Optional software monthly comparison
+### 9.4 Software configuration (bundles + billing)
+
+The earlier single “current software cost per camera” input has been replaced by an explicit selection of Sighthound analytics bundles. Software is always kept separate from hardware and is modeled as recurring per-camera pricing.
+
+- **Canonical per-camera software prices (monthly)**
+  - LPR (`software = lpr`): `$30 / camera / month`.
+  - MMCG (`software = mmcg`): `$30 / camera / month`.
+  - Both (`software = both`): `$55 / camera / month`.
+  - None (`software = none`): `$0 / camera / month`.
+
+- **UI representation (Live mode)**
+  - Two independent checkboxes:
+    - “LPR” (on/off)
+    - “MMCG” (on/off)
+  - Mapping to the `software` URL param:
+    - Both off → `none` (hardware-only view).
+    - LPR on, MMCG off → `lpr`.
+    - MMCG on, LPR off → `mmcg`.
+    - Both on → `both`.
+
+- **Billing view (`billing` param)**
+  - Values: `monthly` | `yearly`.
+  - Behavior:
+    - All prices are defined per camera **per month** in the calc core.
+    - `billing = yearly` simply multiplies monthly totals by 12 for display.
+    - Hardware math is not affected by billing frequency.
+
+- **Display rules**
+  - Hardware totals and savings are always hardware-only.
+  - Software cards and breakdown lines:
+    - Show per-camera and total recurring costs based on the selected bundle and billing view.
+    - Use language like “Your software costs (recurring)” and keep hardware vs software clearly separated.
 
 - **Fixed Sighthound assumption**
   - `SIGHTHOUND_SOFTWARE_COST_PER_CAMERA = 30` (USD per camera per month).
